@@ -25,6 +25,7 @@ namespace WebApplication1.Controllers
             _env = env;
         }
 
+
         [HttpGet]
         public JsonResult Get()
         {
@@ -32,6 +33,7 @@ namespace WebApplication1.Controllers
             var dbList = dbClient.GetDatabase("Database").GetCollection<Customer>("Customer").AsQueryable();
             return new JsonResult(dbList);
         }
+
 
         [HttpPost]
         public JsonResult Post(Customer cus)
@@ -43,25 +45,27 @@ namespace WebApplication1.Controllers
             return new JsonResult("Added Successfully");
         }
 
-        /*
-
+        
         [HttpPut]
-        public JsonResult Put(Employee emp)
+        public JsonResult Put(Customer cus)
         {
-            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("EmployeeAppCon"));
-
-            var filter = Builders<Employee>.Filter.Eq("EmployeeId", emp.EmployeeId);
-
-            var update = Builders<Employee>.Update.Set("EmployeeName", emp.EmployeeName)
-                                                    .Set("Department", emp.Department)
-                                                    .Set("DateOfJoining", emp.DateOfJoining)
-                                                    .Set("PhotoFileName", emp.PhotoFileName);
-
-            dbClient.GetDatabase("Database").GetCollection<Employee>("Employee").UpdateOne(filter, update);
-
+            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
+            var filter = Builders<Customer>.Filter.Eq("customer_nr", cus.customer_nr);
+            var update = Builders<Customer>.Update.Set("surname", cus.surname)
+                                                    .Set("lastname", cus.lastname)
+                                                    .Set("dob", cus.dob)
+                                                    .Set("street", cus.street)
+                                                    .Set("postcode", cus.postcode)
+                                                    .Set("country", cus.country)
+                                                    .Set("cellphone", cus.cellphone)
+                                                    .Set("landlinephone", cus.landlinephone)
+                                                    .Set("note", cus.note)
+                                                    .Set("email", cus.email);
+            dbClient.GetDatabase("Database").GetCollection<Customer>("Customer").UpdateOne(filter, update);
             return new JsonResult("Updated Successfully");
         }
-        */
+        
+
 
         [HttpDelete("{id}")]
         public JsonResult Delete(int id)
