@@ -29,25 +29,21 @@ namespace WebApplication1.Controllers
         public JsonResult Get()
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
-
             var dbList = dbClient.GetDatabase("Database").GetCollection<Customer>("Customer").AsQueryable();
-
             return new JsonResult(dbList);
         }
 
-        /*
         [HttpPost]
-        public JsonResult Post(Employee emp)
+        public JsonResult Post(Customer cus)
         {
-            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("EmployeeAppCon"));
-
-            int LastEmployeeId = dbClient.GetDatabase("testdb").GetCollection<Department>("Employee").AsQueryable().Count();
-            emp.EmployeeId = LastEmployeeId + 1;
-
-            dbClient.GetDatabase("Database").GetCollection<Employee>("Employee").InsertOne(emp);
-
+            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
+            int LastCustomerId = dbClient.GetDatabase("Database").GetCollection<Customer>("Customer").AsQueryable().Count();
+            cus.customer_nr = LastCustomerId + 1;
+            dbClient.GetDatabase("Database").GetCollection<Customer>("Customer").InsertOne(cus);
             return new JsonResult("Added Successfully");
         }
+
+        /*
 
         [HttpPut]
         public JsonResult Put(Employee emp)
@@ -65,22 +61,18 @@ namespace WebApplication1.Controllers
 
             return new JsonResult("Updated Successfully");
         }
-
+        */
 
         [HttpDelete("{id}")]
         public JsonResult Delete(int id)
         {
-            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("EmployeeAppCon"));
-
-            var filter = Builders<Employee>.Filter.Eq("EmployeeId", id);
-
-
-            dbClient.GetDatabase("Database").GetCollection<Employee>("Employee").DeleteOne(filter);
-
-            return new JsonResult("Deleted Successfully");
+            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
+            var filter = Builders<Customer>.Filter.Eq("customer_nr", id);
+            dbClient.GetDatabase("Database").GetCollection<Customer>("Customer").DeleteOne(filter);
+            return new JsonResult("Kunde wurde erfolgreich gelöscht");
         }
 
-
+        /*
         [Route("SaveFile")]
         [HttpPost]
         public JsonResult SaveFile()
