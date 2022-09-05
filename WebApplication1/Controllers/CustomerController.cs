@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApplication1.Models;
+using System.Diagnostics;
 
 namespace WebApplication1.Controllers
 {
@@ -19,7 +17,7 @@ namespace WebApplication1.Controllers
 
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
-        public CustomerController(IConfiguration configuration,IWebHostEnvironment env)
+        public CustomerController(IConfiguration configuration, IWebHostEnvironment env)
         {
             _configuration = configuration;
             _env = env;
@@ -45,24 +43,41 @@ namespace WebApplication1.Controllers
             return new JsonResult("Added Successfully");
         }
 
-        
+       
         [HttpPut]
         public JsonResult Put(Customer cus)
         {
+
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var filter = Builders<Customer>.Filter.Eq("customer_nr", cus.customer_nr);
+
+            Debug.WriteLine("Debug " + cus.customer_nr);
+            Debug.WriteLine("Debug " + cus.surname);
+            Debug.WriteLine("Debug " + cus.lastname);
+            Debug.WriteLine("Debug " + cus.dob);
+            Debug.WriteLine("Debug " + cus.street);
+            Debug.WriteLine("Debug " + cus.postcode);
+            Debug.WriteLine("Debug " + cus.country);
+            Debug.WriteLine("Debug " + cus.cellphone);
+            Debug.WriteLine("Debug " + cus.landlinephone);
+            Debug.WriteLine("Debug " + cus.note);
+            Debug.WriteLine("Debug " + cus.email);
+
             var update = Builders<Customer>.Update.Set("surname", cus.surname)
                                                     .Set("lastname", cus.lastname)
                                                     .Set("dob", cus.dob)
                                                     .Set("street", cus.street)
+                                                    .Set("street", cus.nr)
                                                     .Set("postcode", cus.postcode)
                                                     .Set("country", cus.country)
                                                     .Set("cellphone", cus.cellphone)
                                                     .Set("landlinephone", cus.landlinephone)
                                                     .Set("note", cus.note)
                                                     .Set("email", cus.email);
+            Debug.WriteLine("Update " + update);
             dbClient.GetDatabase("Database").GetCollection<Customer>("Customer").UpdateOne(filter, update);
-            return new JsonResult("Updated Successfully");
+            //return new JsonResult("Updated Successfully");
+            return new JsonResult(cus);
         }
         
 

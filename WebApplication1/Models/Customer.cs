@@ -20,6 +20,8 @@ namespace WebApplication1.Models
 
         public string street { get; set; }
 
+        public string nr { get; set; }
+
         public string postcode { get; set; }
 
         public string country { get; set; }
