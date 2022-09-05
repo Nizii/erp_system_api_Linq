@@ -16,7 +16,8 @@ namespace WebApplication1.Models
 
         public string lastname { get; set; }
 
-        public DateTime dob { get; set; }
+        //public DateTime dob { get; set; }
+        public String dob { get; set; }
 
         public string street { get; set; }
 
