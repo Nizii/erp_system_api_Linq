@@ -67,7 +67,7 @@ namespace WebApplication1.Controllers
                                                     .Set("lastname", cus.lastname)
                                                     .Set("dob", cus.dob)
                                                     .Set("street", cus.street)
-                                                    .Set("street", cus.nr)
+                                                    .Set("nr", cus.nr)
                                                     .Set("postcode", cus.postcode)
                                                     .Set("country", cus.country)
                                                     .Set("cellphone", cus.cellphone)
