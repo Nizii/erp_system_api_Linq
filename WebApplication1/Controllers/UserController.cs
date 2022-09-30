@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApplication1.Models;
 using System.Diagnostics;
+using MongoDB.Bson;
 
 namespace WebApplication1.Controllers
 {
@@ -23,7 +24,7 @@ namespace WebApplication1.Controllers
             _env = env;
         }
 
-
+        /*
         [HttpGet]
         public JsonResult Get()
         {
@@ -31,14 +32,20 @@ namespace WebApplication1.Controllers
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
             return new JsonResult(dbList);
         }
+        */
 
         [HttpGet("{user_name}")]
         public JsonResult Get(string user_name)
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var filter = Builders<User>.Filter.Eq("user_nr", user_name);
-            //dbClient.GetDatabase("Database").GetCollection<User>("User");
-            return new JsonResult(filter);
+            var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User");
+            var query = dbList.Find(filter);
+            foreach (var result in query.ToList())
+            {
+                return new JsonResult(result);
+            }
+            return new JsonResult(query);
         }
 
 
