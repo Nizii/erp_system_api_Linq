@@ -32,6 +32,15 @@ namespace WebApplication1.Controllers
             return new JsonResult(dbList);
         }
 
+        [HttpGet("{user_name}")]
+        public JsonResult Get(string user_name)
+        {
+            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
+            var filter = Builders<User>.Filter.Eq("user_nr", user_name);
+            //dbClient.GetDatabase("Database").GetCollection<User>("User");
+            return new JsonResult(filter);
+        }
+
 
         [HttpPost]
         public JsonResult Post(User user)
@@ -69,5 +78,6 @@ namespace WebApplication1.Controllers
             dbClient.GetDatabase("Database").GetCollection<User>("User").DeleteOne(filter);
             return new JsonResult("Kunde wurde erfolgreich gelöscht");
         }
+
     }
 }
