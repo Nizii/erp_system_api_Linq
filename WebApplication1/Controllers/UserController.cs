@@ -45,7 +45,7 @@ namespace WebApplication1.Controllers
             {
                 return new JsonResult(result);
             }
-            return new JsonResult(query);
+            //return new JsonResult(query);
         }
 
 
