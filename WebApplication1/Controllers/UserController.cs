@@ -35,7 +35,7 @@ namespace WebApplication1.Controllers
         */
 
         [HttpGet]
-        public JsonResult Get(string user_name)
+        public string Get(string user_name)
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
@@ -47,7 +47,7 @@ namespace WebApplication1.Controllers
                     hash = result.user_password;
                 }
             }
-            return new JsonResult(hash);
+            return hash;
         }
 
 
