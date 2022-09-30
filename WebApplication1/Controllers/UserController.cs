@@ -52,13 +52,13 @@ namespace WebApplication1.Controllers
 
 
         [HttpPost]
-        public bool Post(User user)
+        public JsonResult Post(User user)
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             int lastUserId = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable().Count();
             user.user_nr = lastUserId + 1;
             dbClient.GetDatabase("Database").GetCollection<User>("User").InsertOne(user);
-            return true;
+            return new JsonResult("Added Successfully");
         }
 
        
