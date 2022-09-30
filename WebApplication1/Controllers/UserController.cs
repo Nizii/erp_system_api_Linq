@@ -24,7 +24,7 @@ namespace WebApplication1.Controllers
             _env = env;
         }
 
-        /*
+        
         [HttpGet]
         public JsonResult Get()
         {
@@ -32,20 +32,21 @@ namespace WebApplication1.Controllers
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
             return new JsonResult(dbList);
         }
-        */
+        
 
-        [HttpGet("{user_name}")]
+        [HttpGet]
         public JsonResult Get(string user_name)
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
-            var filter = Builders<User>.Filter.Eq("user_nr", user_name);
-            var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User");
-            var query = dbList.Find(filter);
-            foreach (var result in query.ToList())
+            var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
+            var hash = "Not found";
+            foreach (var result in dbList)
             {
-                return new JsonResult(result);
+                if(result.user_name.Equals(user_name)) {
+                    hash = result.user_password;
+                }
             }
-            //return new JsonResult(query);
+            return new JsonResult(hash);
         }
 
 
