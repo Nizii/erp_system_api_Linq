@@ -2,12 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
-using System;
 using System.Linq;
-using System.Threading.Tasks;
 using WebApplication1.Models;
 using System.Diagnostics;
-using MongoDB.Bson;
 using BCrypt.Net;
 
 namespace WebApplication1.Controllers
@@ -36,7 +33,7 @@ namespace WebApplication1.Controllers
         */
 
         [HttpGet]
-        public string[] Get(string user_name, string user_password)
+        public string[] Get([FromQuery] User user)
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
@@ -44,9 +41,9 @@ namespace WebApplication1.Controllers
             string s = "";
             foreach (var result in dbList)
             {
-                s= result.user_name;
-                if(result.user_name.Equals(user_name)) {
-                    if(BCrypt.Net.BCrypt.Verify(user_password, result.user_password)) {
+                s = result.user_name;
+                if(result.user_name.Equals(user.user_name)) {
+                    if(BCrypt.Net.BCrypt.Verify(user.user_password, result.user_password)) {
                         result_array[0] = result.user_nr.ToString();
                         result_array[1] = result.user_name;
                         break;
@@ -56,7 +53,7 @@ namespace WebApplication1.Controllers
                 } 
                 else
                 {
-                    result_array[0] = "User Not found-> Param "+user_name+", DB"+s;
+                    result_array[0] = "Parameter /"+ user.user_name +"/, DB /"+s;
                 }
             }
             return result_array;
@@ -64,7 +61,7 @@ namespace WebApplication1.Controllers
 
 
         [HttpPost]
-        public string[] Post(User user_object)
+        public string[] Post([FromForm] User user)
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
@@ -73,7 +70,7 @@ namespace WebApplication1.Controllers
             
             foreach (var user_name in dbList)
             {
-                if (user_name.Equals(user_object.user_name))
+                if (user_name.Equals(user.user_name))
                 {
                     result_array[0] = "Name bereits vergeben";
                     name_is_not_double = false; 
@@ -84,13 +81,13 @@ namespace WebApplication1.Controllers
             if (name_is_not_double)
             {
                 int salt = 12;
-                user_object.user_password = BCrypt.Net.BCrypt.HashPassword(user_object.user_password, salt);
+                user.user_password = BCrypt.Net.BCrypt.HashPassword(user.user_password, salt);
 
                 int lastUserId = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable().Count();
-                user_object.user_nr = lastUserId + 1;
-                dbClient.GetDatabase("Database").GetCollection<User>("User").InsertOne(user_object);
-                result_array[0] = user_object.user_nr.ToString();
-                result_array[1] = user_object.user_name;
+                user.user_nr = lastUserId + 1;
+                dbClient.GetDatabase("Database").GetCollection<User>("User").InsertOne(user);
+                result_array[0] = user.user_nr.ToString();
+                result_array[1] = user.user_name;
             }
 
             return result_array;
