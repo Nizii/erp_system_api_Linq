@@ -68,9 +68,9 @@ namespace WebApplication1.Controllers
             string[] result_array = new string[3];
             bool name_is_not_double = true;
             
-            foreach (var user_name in dbList)
+            foreach (var user_from_db in dbList)
             {
-                if (user.user_name.Equals(user_name))
+                if (user.user_name.Equals(user_from_db.user_name))
                 {
                     result_array[0] = "Username already exists";
                     name_is_not_double = false; 
