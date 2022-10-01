@@ -89,7 +89,7 @@ namespace WebApplication1.Controllers
                 user_object.user_nr = lastUserId + 1;
                 dbClient.GetDatabase("Database").GetCollection<User>("User").InsertOne(user_object);
                 result_array[0] = user_object.user_nr.ToString();
-                result_array[0] = user_object.user_name;
+                result_array[1] = user_object.user_name;
             }
 
             return result_array;
