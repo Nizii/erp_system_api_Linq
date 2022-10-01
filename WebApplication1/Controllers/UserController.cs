@@ -45,21 +45,14 @@ namespace WebApplication1.Controllers
             foreach (var result in dbList)
             {
                 if(result.user_name.Equals(user_name)) {
-                    resultArray[0] = result.user_name.Equals(user_name).ToString();
-                    bool verified = BCrypt.Net.BCrypt.Verify(user_password, result.user_password);
-                    if (verified)
-                    {
-                        resultArray[1] = verified.ToString();
-                        resultArray[2] = result.user_nr.ToString();
-                        resultArray[3] = result.user_name;
-                        resultArray[4] = result.user_password;
-                        resultArray[5] = result.user_email;
-                        break;
-                    } 
-                    else
-                    {
-                        resultArray[0] = verified.ToString();
-                    }
+                    resultArray[0] = "User found";
+                    resultArray[1] = result.user_nr.ToString();;
+                    resultArray[2] = result.user_password;
+                    break;
+                } 
+                else
+                {
+                    resultArray[0] = "User Not found";
                 }
             }
             return resultArray;
