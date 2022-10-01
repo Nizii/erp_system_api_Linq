@@ -45,7 +45,7 @@ namespace WebApplication1.Controllers
             foreach (var result in dbList)
             {
                 if(result.user_name.Equals(user_name)) {
-                    if(BCrypt.Net.BCrypt.Verify(result.user_password, user_password)) {
+                    if(BCrypt.Net.BCrypt.Verify(user_password, result.user_password)) {
                         result_array[0] = result.user_nr.ToString();
                         result_array[1] = result.user_name;
                         break;
