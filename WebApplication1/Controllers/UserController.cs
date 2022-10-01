@@ -36,23 +36,26 @@ namespace WebApplication1.Controllers
         */
 
         [HttpGet]
-        public string[] Get(string user_name)
+        public string[] Get(User user_object)
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
             string[] result_array = new string[3];
-
+            
             foreach (var result in dbList)
             {
-                if(result.user_name.Equals(user_name)) {
-                    result_array[0] = "User found";
-                    result_array[1] = result.user_nr.ToString();
-                    result_array[2] = result.user_password;
+                if(result.user_name.Equals(user_object.user_name)) {
+                    if(BCrypt.Net.BCrypt.Verify(result.user_password, user_object.user_password)) {
+                        result_array[0] = result.user_nr.ToString();
+                        result_array[1] = result.user_name;
+                        break;
+                    }
+                    result_array[0] = "Password incorrect";
                     break;
                 } 
                 else
                 {
-                    result_array[0] = "User Not found " + user_name;
+                    result_array[0] = "User Not found";
                 }
             }
             return result_array;
@@ -79,6 +82,9 @@ namespace WebApplication1.Controllers
 
             if (name_is_not_double)
             {
+                int salt = 12;
+                string passwordHash = BCrypt.Net.BCrypt.HashPassword(user_object.user_password, salt);
+                user_object.user_password = passwordHash;
                 int lastUserId = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable().Count();
                 user_object.user_nr = lastUserId + 1;
                 dbClient.GetDatabase("Database").GetCollection<User>("User").InsertOne(user_object);
