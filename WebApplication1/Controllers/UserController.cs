@@ -61,7 +61,7 @@ namespace WebApplication1.Controllers
 
 
         [HttpPost]
-        public string[] Post([FromForm] User user)
+        public string[] Post([FromQuery] User user)
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
