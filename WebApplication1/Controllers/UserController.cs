@@ -37,14 +37,15 @@ namespace WebApplication1.Controllers
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
-            string[] result_array = new string[2];
+            string[] result_array = new string[3];
             foreach (var result in dbList)
             {
                 if(user.user_name.Equals(result.user_name.ToString())) {
 
-                    if (BCrypt.Net.BCrypt.Verify(user.user_password, result.user_password)) {   
-                        result_array[0] = result.user_nr.ToString();
-                        result_array[1] = result.user_name;
+                    if (BCrypt.Net.BCrypt.Verify(user.user_password, result.user_password)) {
+                        result_array[0] = "Login Succeed";
+                        result_array[1] = result.user_nr.ToString();
+                        result_array[2] = result.user_name;
                         break;
                     }
                     result_array[0] = "Password incorrect";
@@ -64,14 +65,14 @@ namespace WebApplication1.Controllers
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
-            string[] result_array = new string[2];
+            string[] result_array = new string[3];
             bool name_is_not_double = true;
             
             foreach (var user_name in dbList)
             {
                 if (user_name.Equals(user.user_name))
                 {
-                    result_array[0] = "Name bereits vergeben";
+                    result_array[0] = "Username already exists";
                     name_is_not_double = false; 
                     break;
                 }
@@ -85,8 +86,9 @@ namespace WebApplication1.Controllers
                 int lastUserId = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable().Count();
                 user.user_nr = lastUserId + 1;
                 dbClient.GetDatabase("Database").GetCollection<User>("User").InsertOne(user);
-                result_array[0] = user.user_nr.ToString();
-                result_array[1] = user.user_name;
+                result_array[0] = "Sign Up Succeed";
+                result_array[1] = user.user_nr.ToString();
+                result_array[2] = user.user_name;
             }
 
             return result_array;
