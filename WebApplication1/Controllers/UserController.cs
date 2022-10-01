@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using WebApplication1.Models;
 using System.Diagnostics;
 using MongoDB.Bson;
+using BCrypt.Net;
 
 namespace WebApplication1.Controllers
 {
@@ -35,19 +36,30 @@ namespace WebApplication1.Controllers
         */
 
         [HttpGet]
-        public string[] Get(string user_name)
+        public string[] Get(string user_name, string user_password)
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
-            string[] resultArray = new string[4];
-            
+            string[] resultArray = new string[5];
+
             foreach (var result in dbList)
             {
                 if(result.user_name.Equals(user_name)) {
-                    resultArray[0] = result.user_nr.ToString();
-                    resultArray[1] = result.user_name;
-                    resultArray[2] = result.user_password;
-                    resultArray[3] = result.user_email;
+                    resultArray[0] = result.user_name.Equals(user_name).ToString();
+                    bool verified = BCrypt.Net.BCrypt.Verify(user_password, result.user_password);
+                    if (verified)
+                    {
+                        resultArray[1] = verified.ToString();
+                        resultArray[2] = result.user_nr.ToString();
+                        resultArray[3] = result.user_name;
+                        resultArray[4] = result.user_password;
+                        resultArray[5] = result.user_email;
+                        break;
+                    } 
+                    else
+                    {
+                        resultArray[0] = verified.ToString();
+                    }
                 }
             }
             return resultArray;
