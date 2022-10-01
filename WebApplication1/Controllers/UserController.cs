@@ -35,19 +35,22 @@ namespace WebApplication1.Controllers
         */
 
         [HttpGet]
-        public string Get(string user_name)
+        public string[] Get(string user_name)
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
-            string hash = "User not found";
+            string[] resultArray = new string[4];
             
             foreach (var result in dbList)
             {
                 if(result.user_name.Equals(user_name)) {
-                    hash = result.user_password;
+                    resultArray[0] = result.user_nr.ToString();
+                    resultArray[1] = result.user_name;
+                    resultArray[2] = result.user_password;
+                    resultArray[3] = result.user_email;
                 }
             }
-            return hash;
+            return resultArray;
         }
 
 
