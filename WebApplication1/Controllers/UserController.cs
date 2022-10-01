@@ -40,7 +40,7 @@ namespace WebApplication1.Controllers
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
-            string[] result_array = new string[3];
+            string[] result_array = new string[2];
             
             foreach (var result in dbList)
             {
@@ -63,18 +63,18 @@ namespace WebApplication1.Controllers
 
 
         [HttpPost]
-        public string Post(User user_object)
+        public string[] Post(User user_object)
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
-            string result = "";
+            string[] result_array = new string[2];
             bool name_is_not_double = true;
             
             foreach (var user_name in dbList)
             {
                 if (user_name.Equals(user_object.user_name))
                 {
-                    result = "Name bereits vergeben";
+                    result_array[0] = "Name bereits vergeben";
                     name_is_not_double = false; 
                     break;
                 }
@@ -83,15 +83,16 @@ namespace WebApplication1.Controllers
             if (name_is_not_double)
             {
                 int salt = 12;
-                string passwordHash = BCrypt.Net.BCrypt.HashPassword(user_object.user_password, salt);
-                user_object.user_password = passwordHash;
+                user_object.user_password = BCrypt.Net.BCrypt.HashPassword(user_object.user_password, salt);
+
                 int lastUserId = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable().Count();
                 user_object.user_nr = lastUserId + 1;
                 dbClient.GetDatabase("Database").GetCollection<User>("User").InsertOne(user_object);
-                result = "Erfolgreich Registriert";
+                result_array[0] = user_object.user_nr.ToString();
+                result_array[0] = user_object.user_name;
             }
 
-            return result;
+            return result_array;
         }
 
        
