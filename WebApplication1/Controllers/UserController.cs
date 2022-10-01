@@ -40,33 +40,52 @@ namespace WebApplication1.Controllers
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
-            string[] resultArray = new string[3];
+            string[] result_array = new string[3];
 
             foreach (var result in dbList)
             {
                 if(result.user_name.Equals(user_name)) {
-                    resultArray[0] = "User found";
-                    resultArray[1] = result.user_nr.ToString();
-                    resultArray[2] = result.user_password;
+                    result_array[0] = "User found";
+                    result_array[1] = result.user_nr.ToString();
+                    result_array[2] = result.user_password;
                     break;
                 } 
                 else
                 {
-                    resultArray[0] = "User Not found " + user_name;
+                    result_array[0] = "User Not found " + user_name;
                 }
             }
-            return resultArray;
+            return result_array;
         }
 
 
         [HttpPost]
-        public JsonResult Post(User user)
+        public string Post(User user_object)
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
-            int lastUserId = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable().Count();
-            user.user_nr = lastUserId + 1;
-            dbClient.GetDatabase("Database").GetCollection<User>("User").InsertOne(user);
-            return new JsonResult("Added Successfully");
+            var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
+            string result = "";
+            bool name_is_not_double = true;
+            
+            foreach (var user_name in dbList)
+            {
+                if (user_name.Equals(user_object.user_name))
+                {
+                    result = "Name bereits vergeben";
+                    name_is_not_double = false; 
+                    break;
+                }
+            }
+
+            if (name_is_not_double)
+            {
+                int lastUserId = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable().Count();
+                user_object.user_nr = lastUserId + 1;
+                dbClient.GetDatabase("Database").GetCollection<User>("User").InsertOne(user_object);
+                result = "Erfolgreich Registriert";
+            }
+
+            return result;
         }
 
        
