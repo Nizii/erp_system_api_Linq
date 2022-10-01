@@ -40,7 +40,7 @@ namespace WebApplication1.Controllers
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
-            string[] resultArray = new string[5];
+            string[] resultArray = new string[3];
 
             foreach (var result in dbList)
             {
@@ -52,7 +52,7 @@ namespace WebApplication1.Controllers
                 } 
                 else
                 {
-                    resultArray[0] = "User Not found";
+                    resultArray[0] = "User Not found " + user_name;
                 }
             }
             return resultArray;
