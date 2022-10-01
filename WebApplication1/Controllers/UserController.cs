@@ -36,7 +36,7 @@ namespace WebApplication1.Controllers
         */
 
         [HttpGet]
-        public string[] Get(string user_name, string user_password)
+        public string[] Get(string user_name)
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
@@ -46,7 +46,7 @@ namespace WebApplication1.Controllers
             {
                 if(result.user_name.Equals(user_name)) {
                     resultArray[0] = "User found";
-                    resultArray[1] = result.user_nr.ToString();;
+                    resultArray[1] = result.user_nr.ToString();
                     resultArray[2] = result.user_password;
                     break;
                 } 
