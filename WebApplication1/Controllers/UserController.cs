@@ -70,7 +70,7 @@ namespace WebApplication1.Controllers
             
             foreach (var user_name in dbList)
             {
-                if (user_name.Equals(user.user_name))
+                if (user.user_name.Equals(user_name))
                 {
                     result_array[0] = "Username already exists";
                     name_is_not_double = false; 
