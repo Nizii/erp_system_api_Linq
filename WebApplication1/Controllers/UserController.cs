@@ -41,9 +41,10 @@ namespace WebApplication1.Controllers
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
             string[] result_array = new string[2];
-            
+            string s = "";
             foreach (var result in dbList)
             {
+                s= result.user_name;
                 if(result.user_name.Equals(user_name)) {
                     if(BCrypt.Net.BCrypt.Verify(user_password, result.user_password)) {
                         result_array[0] = result.user_nr.ToString();
@@ -55,7 +56,7 @@ namespace WebApplication1.Controllers
                 } 
                 else
                 {
-                    result_array[0] = "User Not found";
+                    result_array[0] = "User Not found-> Param "+user_name+", DB"+s;
                 }
             }
             return result_array;
