@@ -36,7 +36,7 @@ namespace WebApplication1.Controllers
         */
 
         [HttpGet]
-        public string[] Get(User user_object)
+        public string[] Get(string user_name, string user_password)
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
@@ -44,8 +44,8 @@ namespace WebApplication1.Controllers
             
             foreach (var result in dbList)
             {
-                if(result.user_name.Equals(user_object.user_name)) {
-                    if(BCrypt.Net.BCrypt.Verify(result.user_password, user_object.user_password)) {
+                if(result.user_name.Equals(user_name)) {
+                    if(BCrypt.Net.BCrypt.Verify(result.user_password, user_password)) {
                         result_array[0] = result.user_nr.ToString();
                         result_array[1] = result.user_name;
                         break;
