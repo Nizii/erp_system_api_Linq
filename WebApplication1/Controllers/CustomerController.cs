@@ -37,7 +37,16 @@ namespace WebApplication1.Controllers
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var dbList = dbClient.GetDatabase("Database").GetCollection<Customer>("Customer").AsQueryable();
-            return new JsonResult(dbList);
+            Customer customer = null;
+            foreach (var customer_from_db in dbList)
+            {
+                if (id.Equals(customer_from_db.customer_nr))
+                {
+                    customer = customer_from_db;
+                    break;
+                }
+            }
+            return new JsonResult(customer);
         }
 
 
