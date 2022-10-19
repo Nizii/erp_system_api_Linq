@@ -32,6 +32,14 @@ namespace WebApplication1.Controllers
             return new JsonResult(dbList);
         }
 
+        [HttpGet("{id}")]
+        public JsonResult Get(int id)
+        {
+            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
+            var dbList = dbClient.GetDatabase("Database").GetCollection<Customer>("Customer").AsQueryable();
+            return new JsonResult(dbList);
+        }
+
 
         [HttpPost]
         public JsonResult Post(Customer cus)
