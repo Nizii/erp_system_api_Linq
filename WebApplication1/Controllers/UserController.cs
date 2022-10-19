@@ -87,8 +87,8 @@ namespace WebApplication1.Controllers
                 user.user_nr = lastUserId + 1;
                 dbClient.GetDatabase("Database").GetCollection<User>("User").InsertOne(user);
                 result_array[0] = "Sign Up Succeed";
-                result_array[1] = user.user_nr.ToString();
-                result_array[2] = user.user_name;
+                result_array[1] = "+"+user.user_nr.ToString()+"+";
+                result_array[2] = "+"+user.user_name+"+";
             }
 
             return result_array;
