@@ -85,7 +85,7 @@ namespace WebApplication1.Controllers
                                                     .Set("units_available", pro.units_available)
                                                     .Set("unit", pro.unit)
                                                     .Set("purchasing_price_per_unit", pro.purchasing_price_per_unit)
-                                                    .Set("selling_price_per_unit", pro.selling_price_per_unit)
+                                                    .Set("selling_price_per_unit", pro.selling_price_per_unit);
             Debug.WriteLine("Update " + update);
             dbClient.GetDatabase("Database").GetCollection<Product>("Product").UpdateOne(filter, update);
             //return new JsonResult("Updated Successfully");
