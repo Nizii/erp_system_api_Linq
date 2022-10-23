@@ -30,6 +30,23 @@ namespace WebApplication1.Controllers
             return new JsonResult(dbList);
         }
 
+        [HttpGet("{id}")]
+        public JsonResult Get(int id)
+        {
+            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
+            var dbList = dbClient.GetDatabase("Database").GetCollection<CustomerBill>("CustomerBill").AsQueryable();
+            CustomerBill bill = null;
+            foreach (var bill_from_db in dbList)
+            {
+                if (id.Equals(bill_from_db.customer_bill_nr))
+                {
+                    bill = bill_from_db;
+                    break;
+                }
+            }
+            return new JsonResult(bill);
+        }
+
         [HttpPost]
         public JsonResult Post(CustomerBill bill)
         {
