@@ -52,8 +52,8 @@ namespace WebApplication1.Controllers
         {
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
 
-            int LastDepartmentId = dbClient.GetDatabase("Database").GetCollection<CustomerBill>("CustomerBill").AsQueryable().Count();
-            bill.customer_bill_nr = LastDepartmentId + 1;
+            int temp_customer_bill_nr = dbClient.GetDatabase("Database").GetCollection<CustomerBill>("CustomerBill").AsQueryable().Count();
+            bill.customer_bill_nr = temp_customer_bill_nr + 1;
 
             dbClient.GetDatabase("Database").GetCollection<CustomerBill>("CustomerBill").InsertOne(bill);
 

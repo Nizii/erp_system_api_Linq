@@ -19,8 +19,8 @@ namespace WebApplication1.Models
 
         public String unit { get; set; }
 
-        public Int32 purchasing_price_per_unit { get; set; }
+        public Double purchasing_price_per_unit { get; set; }
 
-        public Int32 selling_price_per_unit { get; set; }
+        public Double selling_price_per_unit { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace WebApplication1.Models
 
         public String customer_postcode { get; set; }
 
-        public Int32 amount { get; set; }
+        public Double amount { get; set; }
 
         public String currency { get; set; }
 
