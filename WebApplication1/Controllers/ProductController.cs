@@ -12,7 +12,6 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
         public ProductController(IConfiguration configuration, IWebHostEnvironment env)

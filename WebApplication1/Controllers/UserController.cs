@@ -36,8 +36,8 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public string[] Get([FromQuery] User user)
         {
-            CheckAuthentication();
-            //MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
+            /*
+            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
             string[] result_array = new string[3];
             foreach (var result in dbList)
@@ -58,7 +58,8 @@ namespace WebApplication1.Controllers
                     result_array[0] = "User not found";
                 }
             }
-            return result_array;
+            */
+            return null;
         }
 
 
@@ -100,7 +101,6 @@ namespace WebApplication1.Controllers
         [HttpPut]
         public JsonResult Put(User user)
         {
-
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var filter = Builders<User>.Filter.Eq("user_nr", user.user_nr);
             var update = Builders<User>.Update.Set("user_name", user.user_name)

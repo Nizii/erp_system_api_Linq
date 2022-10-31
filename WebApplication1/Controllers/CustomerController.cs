@@ -7,17 +7,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApplication1.Models;
 using System.Diagnostics;
+using Microsoft.Extensions.Caching.Memory;
+using MySql.Data.MySqlClient;
+using System.Collections.Generic;
+using System.Data;
 
 namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class CustomerController : BaseController
     {
 
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
-        public CustomerController(IConfiguration configuration, IWebHostEnvironment env)
+        public CustomerController(IConfiguration configuration, IWebHostEnvironment env, IMemoryCache cache) : base(configuration, env, cache)
         {
             _configuration = configuration;
             _env = env;
@@ -27,9 +31,44 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public JsonResult Get()
         {
-            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
-            var dbList = dbClient.GetDatabase("Database").GetCollection<Customer>("Customer").AsQueryable();
-            return new JsonResult(dbList);
+            CheckAuthentication();
+            List<Customer> customerList = new List<Customer>();
+            try
+            {
+                conn.Open();
+                var cmd = new MySqlCommand("SELECT * from customer", conn);
+                Int32 count = (Int32)cmd.ExecuteScalar();
+                MySqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    for (int i = 0; i < count; i++)
+                    {
+                        Customer customer = new Customer
+                        {
+                            customer_nr = (int)reader["customer_nr"],
+                            surname = reader["surname"].ToString(),
+                            lastname = reader["lastname"].ToString(),
+                            dob = reader["dob"].ToString(),
+                            street = reader["street"].ToString(),
+                            nr = reader["nr"].ToString(),
+                            postcode = reader["postcode"].ToString(),
+                            country = reader["country"].ToString(),
+                            cellphone = reader["cellphone"].ToString(),
+                            landlinephone = reader["landlinephone"].ToString(),
+                            note = reader["note"].ToString(),
+                            email = reader["email"].ToString()
+                        };
+                        customerList.Add(customer);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("MySql " + ex.ToString());
+            }
+            conn.Close();
+            return new JsonResult(customerList);
         }
 
         [HttpGet("{id}")]
@@ -49,7 +88,6 @@ namespace WebApplication1.Controllers
             return new JsonResult(customer);
         }
 
-
         [HttpPost]
         public JsonResult Post(Customer cus)
         {
@@ -60,11 +98,9 @@ namespace WebApplication1.Controllers
             return new JsonResult("Added Successfully");
         }
 
-       
         [HttpPut]
         public JsonResult Put(Customer cus)
         {
- 
             MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var filter = Builders<Customer>.Filter.Eq("customer_nr", cus.customer_nr);
             Debug.WriteLine("Filter "+filter);
@@ -98,8 +134,6 @@ namespace WebApplication1.Controllers
             return new JsonResult(cus);
         }
         
-
-
         [HttpDelete("{id}")]
         public JsonResult Delete(int id)
         {

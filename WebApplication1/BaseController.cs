@@ -26,14 +26,15 @@ namespace WebApplication1.Controllers
         _configuration = configuration;
         _env = env;
         _cache = cache;
-        string connStr = "server=localhost;user=root;database=erp_system_db;port=3306;password=123456";
+        string connStr = _configuration.GetConnectionString("ConnectionStringForDatabase");
         conn = new MySqlConnection(connStr);
 
         }
     protected bool IsAuthenticated()
     {
-        var requestToken = HttpContext.Request.Headers["AuthToken"].ToArray().FirstOrDefault();
-        var sessionToken = this.GetToken();
+        var requestToken = HttpContext.Request.Headers["AuthToken"].ToArray().FirstOrDefault().ToString();
+            requestToken = requestToken.Substring(1, requestToken.Length - 2);
+        var sessionToken = this.GetToken().ToString();
         return requestToken == sessionToken;
     }
     protected String GetUser(string username, string password)
@@ -55,6 +56,7 @@ namespace WebApplication1.Controllers
                 Debug.WriteLine("MySql " + ex.ToString());
             }
             conn.Close();
+            Debug.WriteLine("Result " + user);
             return user;
     }
     protected bool IsValid(string username, string password)
