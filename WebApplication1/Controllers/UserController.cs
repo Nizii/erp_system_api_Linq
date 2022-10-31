@@ -6,17 +6,18 @@ using System.Linq;
 using WebApplication1.Models;
 using System.Diagnostics;
 using BCrypt.Net;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : BaseController
     {
 
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
-        public UserController(IConfiguration configuration, IWebHostEnvironment env)
+        public UserController(IConfiguration configuration, IWebHostEnvironment env, IMemoryCache cache): base(configuration, env, cache)
         {
             _configuration = configuration;
             _env = env;
@@ -35,7 +36,8 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public string[] Get([FromQuery] User user)
         {
-            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
+            CheckAuthentication();
+            //MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
             var dbList = dbClient.GetDatabase("Database").GetCollection<User>("User").AsQueryable();
             string[] result_array = new string[3];
             foreach (var result in dbList)
