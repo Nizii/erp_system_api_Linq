@@ -35,8 +35,8 @@ namespace WebApplication1.Controllers
             List<Customer> customerList = new List<Customer>();
             try
             {
-                conn.Open();
-                var cmd = new MySqlCommand("SELECT * from customer", conn);
+                con.Open();
+                var cmd = new MySqlCommand("SELECT * from customer", con);
                 Int32 count = (Int32)cmd.ExecuteScalar();
                 MySqlDataReader reader = cmd.ExecuteReader();
 
@@ -67,7 +67,7 @@ namespace WebApplication1.Controllers
             {
                 Debug.WriteLine("MySql " + ex.ToString());
             }
-            conn.Close();
+            con.Close();
             return new JsonResult(customerList);
         }
 

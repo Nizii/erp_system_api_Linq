@@ -19,7 +19,7 @@ namespace WebApplication1.Controllers
     protected readonly IConfiguration _configuration;
     protected readonly IWebHostEnvironment _env;
     protected readonly IMemoryCache _cache;
-    protected MySqlConnection conn;
+    protected MySqlConnection con;
 
     public BaseController(IConfiguration configuration, IWebHostEnvironment env, IMemoryCache cache)
     {
@@ -27,7 +27,7 @@ namespace WebApplication1.Controllers
         _env = env;
         _cache = cache;
         string connStr = _configuration.GetConnectionString("ConnectionStringForDatabase");
-        conn = new MySqlConnection(connStr);
+        con = new MySqlConnection(connStr);
 
         }
     protected bool IsAuthenticated()
@@ -37,26 +37,24 @@ namespace WebApplication1.Controllers
         var sessionToken = this.GetToken().ToString();
         return requestToken == sessionToken;
     }
-    protected String GetUser(string username, string password)
+    protected string GetUser(string username, string password)
     {
-            String user = null;
+            string user = null;
             try
             {
-                conn.Open();
-                var stm = "SELECT user_name, user_password from erp_system_db.user where user_name ='"+username+"' and user_password ='"+password+"'";
-                var cmd = new MySqlCommand(stm, conn);
-                MySqlDataReader rdr = cmd.ExecuteReader();
-                if (rdr.Read()) 
+                con.Open();
+                var cmd = new MySqlCommand("SELECT user_name, user_password from erp_system_db.user where user_name ='" + username + "' and user_password ='" + password + "'", con);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read()) 
                 {
-                    user = (rdr["user_name"].ToString());
+                    user = (reader["user_name"].ToString());
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("MySql " + ex.ToString());
             }
-            conn.Close();
-            Debug.WriteLine("Result " + user);
+            con.Close();
             return user;
     }
     protected bool IsValid(string username, string password)
