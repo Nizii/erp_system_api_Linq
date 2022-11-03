@@ -74,73 +74,120 @@ namespace WebApplication1.Controllers
         [HttpGet("{id}")]
         public JsonResult Get(int id)
         {
-            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
-            var dbList = dbClient.GetDatabase("Database").GetCollection<Customer>("Customer").AsQueryable();
+            CheckAuthentication();
             Customer customer = null;
-            foreach (var customer_from_db in dbList)
+            try
             {
-                if (id.Equals(customer_from_db.customer_nr))
+                con.Open();
+                var cmd = new MySqlCommand("SELECT * from customer where customer_nr = "+id, con);
+                Int32 count = (Int32)cmd.ExecuteScalar();
+                MySqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
                 {
-                    customer = customer_from_db;
-                    break;
+                    customer = new Customer
+                    {
+                            customer_nr = (int)reader["customer_nr"],
+                            surname = reader["surname"].ToString(),
+                            lastname = reader["lastname"].ToString(),
+                            dob = reader["dob"].ToString(),
+                            street = reader["street"].ToString(),
+                            nr = reader["nr"].ToString(),
+                            postcode = reader["postcode"].ToString(),
+                            country = reader["country"].ToString(),
+                            cellphone = reader["cellphone"].ToString(),
+                            landlinephone = reader["landlinephone"].ToString(),
+                            note = reader["note"].ToString(),
+                            email = reader["email"].ToString()
+                    };
+                    
                 }
             }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("MySql " + ex.ToString());
+            }
+            con.Close();
             return new JsonResult(customer);
         }
 
         [HttpPost]
         public JsonResult Post(Customer cus)
         {
-            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
-            int LastCustomerId = dbClient.GetDatabase("Database").GetCollection<Customer>("Customer").AsQueryable().Count();
-            cus.customer_nr = LastCustomerId + 1;
-            dbClient.GetDatabase("Database").GetCollection<Customer>("Customer").InsertOne(cus);
-            return new JsonResult("Added Successfully");
+            CheckAuthentication();
+            try
+            {
+                con.Open();
+                var cmd = new MySqlCommand("INSERT INTO customer (surname,lastname,dob,street,nr,postcode,country,cellphone,landlinephone,note,email) VALUES (@surname,@lastname,@dob,@street,@nr,@postcode,@country,@cellphone,@landlinephone,@note,@email)", con);
+                cmd.Parameters.AddWithValue("@surname", cus.surname);
+                cmd.Parameters.AddWithValue("@lastname", cus.lastname);
+                cmd.Parameters.AddWithValue("@dob", "2022-02-02");
+                cmd.Parameters.AddWithValue("@street", cus.street);
+                cmd.Parameters.AddWithValue("@nr", cus.nr);
+                cmd.Parameters.AddWithValue("@postcode", cus.postcode);
+                cmd.Parameters.AddWithValue("@country", cus.country);
+                cmd.Parameters.AddWithValue("@cellphone", cus.cellphone);
+                cmd.Parameters.AddWithValue("@landlinephone", cus.landlinephone);
+                cmd.Parameters.AddWithValue("@note", cus.note);
+                cmd.Parameters.AddWithValue("@email", cus.email);
+                var result = cmd.ExecuteNonQuery();
+                Debug.WriteLine(result);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("MySql " + ex.ToString());
+            }
+            con.Close();
+            return new JsonResult("Done");
         }
 
         [HttpPut]
         public JsonResult Put(Customer cus)
         {
-            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
-            var filter = Builders<Customer>.Filter.Eq("customer_nr", cus.customer_nr);
-            Debug.WriteLine("Filter "+filter);
-
-            Debug.WriteLine("Customer_nr " + cus.customer_nr);
-            Debug.WriteLine("Debug " + cus.surname);
-            Debug.WriteLine("Debug " + cus.lastname);
-            Debug.WriteLine("Debug " + cus.dob);
-            Debug.WriteLine("Debug " + cus.street);
-            Debug.WriteLine("Debug " + cus.postcode);
-            Debug.WriteLine("Debug " + cus.country);
-            Debug.WriteLine("Debug " + cus.cellphone);
-            Debug.WriteLine("Debug " + cus.landlinephone);
-            Debug.WriteLine("Debug " + cus.note);
-            Debug.WriteLine("Debug " + cus.email);
-
-            var update = Builders<Customer>.Update.Set("surname", cus.surname)
-                                                    .Set("lastname", cus.lastname)
-                                                    .Set("dob", cus.dob)
-                                                    .Set("street", cus.street)
-                                                    .Set("nr", cus.nr)
-                                                    .Set("postcode", cus.postcode)
-                                                    .Set("country", cus.country)
-                                                    .Set("cellphone", cus.cellphone)
-                                                    .Set("landlinephone", cus.landlinephone)
-                                                    .Set("note", cus.note)
-                                                    .Set("email", cus.email);
-            Debug.WriteLine("Update " + update);
-            dbClient.GetDatabase("Database").GetCollection<Customer>("Customer").UpdateOne(filter, update);
-            //return new JsonResult("Updated Successfully");
-            return new JsonResult(cus);
+            CheckAuthentication();
+            try
+            {
+                con.Open();
+                var cmd = new MySqlCommand("Update customer set surname=@surname, lastname=@lastname, dob=@dob, street=@street, nr=@nr, postcode=@postcode, country=@country, cellphone=@cellphone, landlinephone=@landlinephone, note=@note, email=@email where customer_nr ="+cus.customer_nr, con);
+                cmd.Parameters.AddWithValue("@surname", cus.surname);
+                cmd.Parameters.AddWithValue("@lastname", cus.lastname);
+                cmd.Parameters.AddWithValue("@dob", "2022-02-02");
+                cmd.Parameters.AddWithValue("@street", cus.street);
+                cmd.Parameters.AddWithValue("@nr", cus.nr);
+                cmd.Parameters.AddWithValue("@postcode", cus.postcode);
+                cmd.Parameters.AddWithValue("@country", cus.country);
+                cmd.Parameters.AddWithValue("@cellphone", cus.cellphone);
+                cmd.Parameters.AddWithValue("@landlinephone", cus.landlinephone);
+                cmd.Parameters.AddWithValue("@note", cus.note);
+                cmd.Parameters.AddWithValue("@email", cus.email);
+                var result = cmd.ExecuteNonQuery();
+                Debug.WriteLine(result);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("MySql " + ex.ToString());
+            }
+            con.Close();
+            return new JsonResult("Done");
         }
         
         [HttpDelete("{id}")]
         public JsonResult Delete(int id)
         {
-            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
-            var filter = Builders<Customer>.Filter.Eq("customer_nr", id);
-            dbClient.GetDatabase("Database").GetCollection<Customer>("Customer").DeleteOne(filter);
-            return new JsonResult("Kunde wurde erfolgreich gelöscht");
+            CheckAuthentication();
+            try
+            {
+                con.Open();
+                var cmd = new MySqlCommand("DELETE FROM customer WHERE customer_nr ="+id, con);
+                var result = cmd.ExecuteNonQuery();
+                Debug.WriteLine(result);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("MySql " + ex.ToString());
+            }
+            con.Close();
+            return new JsonResult("Done");
         }
     }
 }
