@@ -2,19 +2,25 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
+using System;
 using System.Linq;
+using System.Threading.Tasks;
 using WebApplication1.Models;
 using System.Diagnostics;
+using Microsoft.Extensions.Caching.Memory;
+using MySql.Data.MySqlClient;
+using System.Collections.Generic;
+using System.Data;
 
 namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class ProductController : BaseController
     {
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
-        public ProductController(IConfiguration configuration, IWebHostEnvironment env)
+        public ProductController(IConfiguration configuration, IWebHostEnvironment env, IMemoryCache cache) : base(configuration, env, cache)
         {
             _configuration = configuration;
             _env = env;
@@ -24,25 +30,73 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public JsonResult Get()
         {
-            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
-            var dbList = dbClient.GetDatabase("Database").GetCollection<Product>("Product").AsQueryable();
-            return new JsonResult(dbList);
+            CheckAuthentication();
+            List<Product> productList = new List<Product>();
+            try
+            {
+                con.Open();
+                var cmd = new MySqlCommand("SELECT * from product", con);
+                Int32 count = (Int32)cmd.ExecuteScalar();
+                MySqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    for (int i = 0; i < count; i++)
+                    {
+                        Product product = new Product
+                        {
+                            product_nr = (int) reader["product_nr"],
+                            product_name = reader["product_name"].ToString(),
+                            product_size = reader["product_size"].ToString(),
+                            description = reader["description"].ToString(),
+                            units_available = (int) reader["units_available"],
+                            unit = reader["unit"].ToString(),
+                            purchasing_price_per_unit = (double) reader["purchasing_price_per_unit"],
+                            selling_price_per_unit = (double) reader["selling_price_per_unit"],
+                        };
+                        productList.Add(product);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("MySql " + ex.ToString());
+            }
+            con.Close();
+            return new JsonResult(productList);
         }
 
         [HttpGet("{id}")]
         public JsonResult Get(int id)
         {
-            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
-            var dbList = dbClient.GetDatabase("Database").GetCollection<Product>("Product").AsQueryable();
+            CheckAuthentication();
             Product product = null;
-            foreach (var product_from_db in dbList)
+            try
             {
-                if (id.Equals(product_from_db.product_nr))
+                con.Open();
+                var cmd = new MySqlCommand("SELECT * from product where product_nr = " + id, con);
+                MySqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
                 {
-                    product = product_from_db;
-                    break;
+                        product = new Product
+                        {
+                            product_nr = (int)reader["product_nr"],
+                            product_name = reader["product_name"].ToString(),
+                            product_size = reader["product_size"].ToString(),
+                            description = reader["description"].ToString(),
+                            units_available = (int)reader["units_available"],
+                            unit = reader["unit"].ToString(),
+                            purchasing_price_per_unit = (double)reader["purchasing_price_per_unit"],
+                            selling_price_per_unit = (double)reader["selling_price_per_unit"],
+                        };
                 }
             }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("MySql " + ex.ToString());
+            }
+            con.Close();
             return new JsonResult(product);
         }
 
@@ -50,45 +104,54 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public JsonResult Post(Product pro)
         {
-            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
-            int LastProductId = dbClient.GetDatabase("Database").GetCollection<Product>("Product").AsQueryable().Count();
-            pro.product_nr = LastProductId + 1;
-            dbClient.GetDatabase("Database").GetCollection<Product>("Product").InsertOne(pro);
-            return new JsonResult("Added Successfully");
+            CheckAuthentication();
+            try
+            {
+                con.Open();
+                var cmd = new MySqlCommand("INSERT INTO product (product_name,product_size,description,units_available,unit,purchasing_price_per_unit,selling_price_per_unit) VALUES (@product_name,@product_size,@description,@unit,@currency,@purchasing_price_per_unit,@selling_price_per_unit)", con);
+                cmd.Parameters.AddWithValue("@product_name", pro.product_name);
+                cmd.Parameters.AddWithValue("@product_size", pro.product_size);
+                cmd.Parameters.AddWithValue("@description", pro.description);
+                cmd.Parameters.AddWithValue("@units_available", pro.units_available);
+                cmd.Parameters.AddWithValue("@unit", pro.unit);
+                cmd.Parameters.AddWithValue("@purchasing_price_per_unit", pro.purchasing_price_per_unit);
+                cmd.Parameters.AddWithValue("@selling_price_per_unit", pro.selling_price_per_unit);
+                var result = cmd.ExecuteNonQuery();
+                Debug.WriteLine(result);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("MySql " + ex.ToString());
+            }
+            con.Close();
+            return new JsonResult("Done");
         }
 
        
         [HttpPut]
         public JsonResult Put(Product pro)
         {
- 
-            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
-            var filter = Builders<Product>.Filter.Eq("product_nr", pro.product_nr);
-            Debug.WriteLine("Filter "+filter);
-            /*
-            Debug.WriteLine("Customer_nr " + cus.customer_nr);
-            Debug.WriteLine("Debug " + cus.surname);
-            Debug.WriteLine("Debug " + cus.lastname);
-            Debug.WriteLine("Debug " + cus.dob);
-            Debug.WriteLine("Debug " + cus.street);
-            Debug.WriteLine("Debug " + cus.postcode);
-            Debug.WriteLine("Debug " + cus.country);
-            Debug.WriteLine("Debug " + cus.cellphone);
-            Debug.WriteLine("Debug " + cus.landlinephone);
-            Debug.WriteLine("Debug " + cus.note);
-            Debug.WriteLine("Debug " + cus.email);
-            */
-            var update = Builders<Product>.Update.Set("product_name", pro.product_name)
-                                                    .Set("product_size", pro.product_size)
-                                                    .Set("description", pro.description)
-                                                    .Set("units_available", pro.units_available)
-                                                    .Set("unit", pro.unit)
-                                                    .Set("purchasing_price_per_unit", pro.purchasing_price_per_unit)
-                                                    .Set("selling_price_per_unit", pro.selling_price_per_unit);
-            Debug.WriteLine("Update " + update);
-            dbClient.GetDatabase("Database").GetCollection<Product>("Product").UpdateOne(filter, update);
-            //return new JsonResult("Updated Successfully");
-            return new JsonResult(pro);
+            CheckAuthentication();
+            try
+            {
+                con.Open();
+                var cmd = new MySqlCommand("Update product set product_name=@product_name, product_size=@product_size, description=@description, units_available=@units_available, unit=@unit, purchasing_price_per_unit=@purchasing_price_per_unit, selling_price_per_unit=@selling_price_per_unit where product_nr =" + pro.product_nr, con);
+                cmd.Parameters.AddWithValue("@product_name", pro.product_name);
+                cmd.Parameters.AddWithValue("@product_size", pro.product_size);
+                cmd.Parameters.AddWithValue("@description", pro.description);
+                cmd.Parameters.AddWithValue("@units_available", pro.units_available);
+                cmd.Parameters.AddWithValue("@unit", pro.unit);
+                cmd.Parameters.AddWithValue("@purchasing_price_per_unit", pro.purchasing_price_per_unit);
+                cmd.Parameters.AddWithValue("@selling_price_per_unit", pro.selling_price_per_unit);
+                var result = cmd.ExecuteNonQuery();
+                Debug.WriteLine(result);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("MySql " + ex.ToString());
+            }
+            con.Close();
+            return new JsonResult("Done");
         }
         
 
@@ -96,10 +159,20 @@ namespace WebApplication1.Controllers
         [HttpDelete("{id}")]
         public JsonResult Delete(int id)
         {
-            MongoClient dbClient = new MongoClient(_configuration.GetConnectionString("ConnectionStringForDatabase"));
-            var filter = Builders<Product>.Filter.Eq("product_nr", id);
-            dbClient.GetDatabase("Database").GetCollection<Product>("Product").DeleteOne(filter);
-            return new JsonResult("Produkt wurde erfolgreich gelöscht");
+            CheckAuthentication();
+            try
+            {
+                con.Open();
+                var cmd = new MySqlCommand("DELETE FROM product WHERE product_nr =" + id, con);
+                var result = cmd.ExecuteNonQuery();
+                Debug.WriteLine(result);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("MySql " + ex.ToString());
+            }
+            con.Close();
+            return new JsonResult("Done");
         }
     }
 }

@@ -80,7 +80,6 @@ namespace WebApplication1.Controllers
             {
                 con.Open();
                 var cmd = new MySqlCommand("SELECT * from customer where customer_nr = "+id, con);
-                Int32 count = (Int32)cmd.ExecuteScalar();
                 MySqlDataReader reader = cmd.ExecuteReader();
 
                 while (reader.Read())
@@ -100,7 +99,6 @@ namespace WebApplication1.Controllers
                             note = reader["note"].ToString(),
                             email = reader["email"].ToString()
                     };
-                    
                 }
             }
             catch (Exception ex)
