@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database Name="erp_system_db" EntityNamespace="ErpSystemDbContext" ContextNamespace="ErpSystemDbContext" Class="ErpSystemDbDataContext" xmlns:ed="http://devart.com/schemas/EntityDeveloper/1.0" ed:Guid="3402e674-2369-4f91-92e1-79e1d8e68a29" Provider="Devart.Data.MySql.Linq.Provider.MySqlDataProvider, Devart.Data.MySql.Linq" Extended="true" xmlns="http://schemas.devart.com/linqconnect/mapping">
+  <Connection Mode="ConnectionString" ConnectionString="User Id=root;Password=123456;Host=127.0.0.1;Database=erp_system_db;Persist Security Info=True" Provider="Devart.Data.MySql" />
+  <Table Name="erp_system_db.customer" Member="Customers">
+    <Type Name="Customer" ed:Guid="620027cd-22aa-4080-90b3-c333386bf7b8">
+      <Column Name="cellphone" Member="Cellphone" Type="System.String" DbType="VARCHAR(50) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="false" ed:Guid="ef28a0f1-34db-4071-8313-c0d41872afb4" />
+      <Column Name="company_name" Member="CompanyName" Type="System.String" DbType="VARCHAR(45) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="45" Unicode="true" ed:ValidateMaxLength="45" ed:ValidateRequired="false" ed:Guid="d32ae71e-d674-4744-8bb9-598112d23992" />
+      <Column Name="country" Member="Country" Type="System.String" DbType="VARCHAR(50) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="false" ed:Guid="10ce9669-64fa-46e7-8abe-fa52d7130fee" />
+      <Column Name="customer_nr" Member="CustomerNr" Type="System.Int32" AutoSync="OnInsert" DbType="INT NOT NULL AUTO_INCREMENT" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" UpdateCheck="Always" ed:ValidateRequired="true" ed:Guid="b6ce652a-bbac-4618-93a2-7a377d6dc982" />
+      <Column Name="dob" Member="Dob" Type="System.DateTime" DbType="DATE NULL" CanBeNull="true" UpdateCheck="Never" ed:ValidateRequired="false" ed:Guid="fa19369c-09fc-4e39-a9ec-1c110dd63c89" />
+      <Column Name="email" Member="Email" Type="System.String" DbType="VARCHAR(50) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="false" ed:Guid="4da8fbfe-9554-4ee1-b404-d6cffe033810" />
+      <Column Name="landlinephone" Member="Landlinephone" Type="System.String" DbType="VARCHAR(50) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="false" ed:Guid="96eed82b-563e-4328-86b1-36960103dff4" />
+      <Column Name="lastname" Member="Lastname" Type="System.String" DbType="VARCHAR(50) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="false" ed:Guid="76ab655e-fbb2-497a-be8e-68868422d49e" />
+      <Column Name="note" Member="Note" Type="System.String" DbType="VARCHAR(50) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="false" ed:Guid="3a4e3d51-d014-4b8a-8c3a-9da7961aecb3" />
+      <Column Name="nr" Member="Nr" Type="System.String" DbType="VARCHAR(50) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="false" ed:Guid="757f3c5a-edf3-434b-8c62-063c8c07b0df" />
+      <Column Name="postcode" Member="Postcode" Type="System.String" DbType="VARCHAR(50) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="false" ed:Guid="03c6d071-63de-4d4d-a9eb-5fc183551699" />
+      <Column Name="street" Member="Street" Type="System.String" DbType="VARCHAR(50) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="false" ed:Guid="ae6c8bae-9a16-42c7-b948-c22c091960f2" />
+      <Column Name="surname" Member="Surname" Type="System.String" DbType="VARCHAR(50) NULL" CanBeNull="true" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="false" ed:Guid="6474bb02-7174-423f-bfe0-fbe0f57a71a1" />
+    </Type>
+  </Table>
+  <Table Name="erp_system_db.customer_bill" Member="CustomerBills">
+    <Type Name="CustomerBill" ed:Guid="1dd6d073-3f1b-4228-a21b-a610522ef83b">
+      <Column Name="amount" Member="Amount" Type="System.Decimal" DbType="DECIMAL(9,2) NOT NULL" CanBeNull="false" UpdateCheck="Never" Precision="9" Scale="2" ed:ValidateRequired="true" ed:Guid="6bf2bb82-b7ca-46b8-b813-ebed5fca9c18" />
+      <Column Name="company_name" Member="CompanyName" Type="System.String" DbType="VARCHAR(45) NOT NULL" CanBeNull="false" UpdateCheck="Never" MaxLength="45" Unicode="true" ed:ValidateMaxLength="45" ed:ValidateRequired="true" ed:Guid="dd80820b-e5b9-4bc9-98e0-2873292fec27" />
+      <Column Name="contact_person" Member="ContactPerson" Type="System.String" DbType="VARCHAR(50) NOT NULL" CanBeNull="false" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="true" ed:Guid="695b287c-fb77-401b-a8fd-bd8ff4b1c9fd" />
+      <Column Name="currency" Member="Currency" Type="System.String" DbType="VARCHAR(50) NOT NULL" CanBeNull="false" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="true" ed:Guid="e3e33725-c37d-4595-931d-a75c48b8425a" />
+      <Column Name="customer_bill_nr" Member="CustomerBillNr" Type="System.Int32" AutoSync="OnInsert" DbType="INT NOT NULL AUTO_INCREMENT" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" UpdateCheck="Always" ed:ValidateRequired="true" ed:Guid="4679b3da-1c41-480b-8449-626347a05250" />
+      <Column Name="customer_postcode" Member="CustomerPostcode" Type="System.String" DbType="VARCHAR(50) NOT NULL" CanBeNull="false" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="true" ed:Guid="f31dd4f7-1ce9-4b97-af9b-fbec57c29ab3" />
+      <Column Name="customer_street" Member="CustomerStreet" Type="System.String" DbType="VARCHAR(50) NOT NULL" CanBeNull="false" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="true" ed:Guid="d03c17cc-6d82-475e-8119-7e7789c669e0" />
+      <Column Name="issued_on" Member="IssuedOn" Type="System.DateTime" DbType="DATE NOT NULL" CanBeNull="false" UpdateCheck="Never" ed:ValidateRequired="true" ed:Guid="a97f7b29-6f27-44e9-a8c5-e3139f8e0560" />
+      <Column Name="payment_date" Member="PaymentDate" Type="System.DateTime" DbType="DATE NOT NULL" CanBeNull="false" UpdateCheck="Never" ed:ValidateRequired="true" ed:Guid="19a98950-00a7-4aec-991e-2fa636c68dee" />
+    </Type>
+  </Table>
+  <Table Name="erp_system_db.product" Member="Products">
+    <Type Name="Product" ed:Guid="f6346c72-bb8d-4eae-a2ef-599c13e91e0f">
+      <Column Name="description" Member="Description" Type="System.String" DbType="VARCHAR(50) NOT NULL" CanBeNull="false" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="true" ed:Guid="a86a624b-cc8b-4a39-a3a5-7f3e85925518" />
+      <Column Name="product_name" Member="ProductName" Type="System.String" DbType="VARCHAR(50) NOT NULL" CanBeNull="false" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="true" ed:Guid="b2cf16c6-8f45-4654-ab3e-f26afa711228" />
+      <Column Name="product_nr" Member="ProductNr" Type="System.Int32" AutoSync="OnInsert" DbType="INT NOT NULL AUTO_INCREMENT" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" UpdateCheck="Always" ed:ValidateRequired="true" ed:Guid="f4051384-efa0-4ba9-88fd-604712bc5b2a" />
+      <Column Name="product_size" Member="ProductSize" Type="System.String" DbType="VARCHAR(50) NOT NULL" CanBeNull="false" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="true" ed:Guid="f8037aa3-ad99-4312-a579-79ac3c1fa2dd" />
+      <Column Name="purchasing_price_per_unit" Member="PurchasingPricePerUnit" Type="System.Decimal" DbType="DECIMAL(4,2) NOT NULL" CanBeNull="false" UpdateCheck="Never" Precision="4" Scale="2" ed:ValidateRequired="true" ed:Guid="1e609def-dad6-47ab-8502-d0b4d3b8e8af" />
+      <Column Name="selling_price_per_unit" Member="SellingPricePerUnit" Type="System.String" DbType="VARCHAR(50) NOT NULL" CanBeNull="false" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="true" ed:Guid="99623dbe-e765-443a-a760-ccec2bb1680f" />
+      <Column Name="unit" Member="Unit" Type="System.String" DbType="VARCHAR(50) NOT NULL" CanBeNull="false" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="true" ed:Guid="c9f9c366-179b-4933-a6aa-78ab0eff44d5" />
+      <Column Name="units_available" Member="UnitsAvailable" Type="System.Int32" DbType="INT NOT NULL" CanBeNull="false" UpdateCheck="Never" ed:ValidateRequired="true" ed:Guid="2185f0ab-cd89-48c1-a55f-e08845d0740f" />
+    </Type>
+  </Table>
+  <Table Name="erp_system_db.user" Member="Users">
+    <Type Name="User" ed:Guid="ab14fc48-53b7-48c9-a813-1945ac6718ee">
+      <Column Name="user_id" Member="UserId" Type="System.SByte" AutoSync="OnInsert" DbType="TINYINT NOT NULL AUTO_INCREMENT" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" UpdateCheck="Always" ed:ValidateRequired="true" ed:Guid="de294f81-12d7-4f5d-a9b5-8f866035b687" />
+      <Column Name="user_name" Member="UserName" Type="System.String" DbType="VARCHAR(50) NOT NULL" CanBeNull="false" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="true" ed:Guid="85007b57-6cf0-4c5d-a629-ba3b3bd8fff9" />
+      <Column Name="user_password" Member="UserPassword" Type="System.String" DbType="VARCHAR(50) NOT NULL" CanBeNull="false" UpdateCheck="Never" MaxLength="50" Unicode="true" ed:ValidateMaxLength="50" ed:ValidateRequired="true" ed:Guid="d5f591bc-adea-452e-aeef-b46fde52e811" />
+    </Type>
+  </Table>
+</Database>

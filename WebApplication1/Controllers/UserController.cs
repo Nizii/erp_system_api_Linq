@@ -12,12 +12,12 @@ namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : BaseController
+    public class UserController : ControllerBase
     {
 
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
-        public UserController(IConfiguration configuration, IWebHostEnvironment env, IMemoryCache cache): base(configuration, env, cache)
+        public UserController(IConfiguration configuration, IWebHostEnvironment env, IMemoryCache cache)
         {
             _configuration = configuration;
             _env = env;
