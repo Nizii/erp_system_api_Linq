@@ -16,10 +16,12 @@ namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerBillController : BaseController
+    public class CustomerBillController : ControllerBase
     {
+        protected MySqlConnection con;
         private readonly IConfiguration _configuration;
-        public CustomerBillController(IConfiguration configuration, IWebHostEnvironment env, IMemoryCache cache) : base(configuration, env, cache)
+        private readonly IWebHostEnvironment _env;
+        public CustomerBillController(IConfiguration configuration, IWebHostEnvironment env, IMemoryCache cache)
         {
             _configuration = configuration;
             _env = env;
@@ -28,7 +30,6 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public JsonResult Get()
         {
-            CheckAuthentication();
             List<CustomerBill> customerBillList = new List<CustomerBill>();
             try
             {
@@ -67,7 +68,6 @@ namespace WebApplication1.Controllers
         [HttpGet("{id}")]
         public JsonResult Get(int id)
         {
-            CheckAuthentication();
             CustomerBill customerBill = null;
             try
             {
@@ -101,7 +101,6 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public JsonResult Post(CustomerBill bill)
         {
-            CheckAuthentication();
             try
             {
                 con.Open();
@@ -127,7 +126,6 @@ namespace WebApplication1.Controllers
         [HttpPut]
         public JsonResult Put(CustomerBill bill)
         {
-            CheckAuthentication();
             try
             {
                 con.Open();
@@ -154,7 +152,6 @@ namespace WebApplication1.Controllers
         [HttpDelete("{id}")]
         public JsonResult Delete(int id)
         {
-            CheckAuthentication();
             try
             {
                 con.Open();

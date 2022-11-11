@@ -6,17 +6,16 @@ namespace WebApplication1.Controllers
 {
  [Route("api/[controller]")]
     [ApiController]
-    public class AuthenticationController : BaseController
+    public class AuthenticationController : ControllerBase
     {
         public AuthenticationController(IConfiguration configuration, IWebHostEnvironment env,
-       IMemoryCache cache) : base(configuration, env, cache)
+       IMemoryCache cache)
         {
         }
         [HttpGet("{username}/{password}")]
         public JsonResult Get(string username, string password)
         {
-            string token = this.Authenticate(username, password);
-            return new JsonResult(token);
+            return new JsonResult(" ");
         }
     }
 }

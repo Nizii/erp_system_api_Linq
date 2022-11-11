@@ -16,21 +16,23 @@ namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductController : BaseController
+    public class ProductController : ControllerBase
     {
+        protected MySqlConnection con;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
-        public ProductController(IConfiguration configuration, IWebHostEnvironment env, IMemoryCache cache) : base(configuration, env, cache)
+        public ProductController(IConfiguration configuration, IWebHostEnvironment env, IMemoryCache cache)
         {
             _configuration = configuration;
             _env = env;
+            string connStr = ConfigurationExtensions.GetConnectionString(_configuration, "ConnectionStringForDatabase");
+            con = new MySqlConnection(connStr);
         }
 
 
         [HttpGet]
         public JsonResult Get()
         {
-            CheckAuthentication();
             List<Product> productList = new List<Product>();
             try
             {
@@ -69,7 +71,6 @@ namespace WebApplication1.Controllers
         [HttpGet("{id}")]
         public JsonResult Get(int id)
         {
-            CheckAuthentication();
             Product product = null;
             try
             {
@@ -104,7 +105,6 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public JsonResult Post(Product pro)
         {
-            CheckAuthentication();
             try
             {
                 con.Open();
@@ -131,7 +131,6 @@ namespace WebApplication1.Controllers
         [HttpPut]
         public JsonResult Put(Product pro)
         {
-            CheckAuthentication();
             try
             {
                 con.Open();
@@ -159,7 +158,7 @@ namespace WebApplication1.Controllers
         [HttpDelete("{id}")]
         public JsonResult Delete(int id)
         {
-            CheckAuthentication();
+
             try
             {
                 con.Open();

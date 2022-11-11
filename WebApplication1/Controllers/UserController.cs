@@ -7,20 +7,23 @@ using WebApplication1.Models;
 using System.Diagnostics;
 using BCrypt.Net;
 using Microsoft.Extensions.Caching.Memory;
+using MySql.Data.MySqlClient;
 
 namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : BaseController
+    public class UserController : ControllerBase
     {
-
+        protected MySqlConnection con;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
-        public UserController(IConfiguration configuration, IWebHostEnvironment env, IMemoryCache cache): base(configuration, env, cache)
+        public UserController(IConfiguration configuration, IWebHostEnvironment env, IMemoryCache cache)
         {
             _configuration = configuration;
             _env = env;
+            string connStr = ConfigurationExtensions.GetConnectionString(_configuration, "ConnectionStringForDatabase");
+            con = new MySqlConnection(connStr);
         }
 
         /*
