@@ -13,6 +13,7 @@ namespace SessionMvc.App.Controllers
     [Route("session")]
     public class TestController : Controller
     {
+        string tempKey = "Nizam";
         protected MySqlConnection con;
         protected readonly IConfiguration _configuration;
         public TestController()
@@ -25,35 +26,41 @@ namespace SessionMvc.App.Controllers
         [HttpGet]
         //[Route("{username}/{password}")]
         [Route("set")]
-        public IActionResult SaveToSession(string username, string password)
+        public JsonResult Set(string username, string password)
         {
-            var user = GetUser("Nizam", "123456");
+            //var user = GetUser("Nizam", "123456");
+            
+            var user = new User
+            {
+                user_nr = 1,
+                user_name = "Nizam",
+            };
 
             if (user != null)
             {
-                HttpContext.Session.Set<User>("info", user);
-                return Content($"save to session");
+                HttpContext.Session.Set<User>(tempKey, user);
+                return new JsonResult($"{user.user_name}, save to session");
             }
             else
             {
-                return Content($"No User found");
+                return new JsonResult($"No User found");
             }
         }
 
         [HttpGet]
         [Route("get")]
-        public IActionResult FetchFromSession()
+        public JsonResult Get()
         {
-            User info = HttpContext.Session.Get<User>("info");
-            return Content($"{info.user_name} info fetched from session");
+            User user = HttpContext.Session.Get<User>(tempKey);
+            return new JsonResult($"{user.user_name}, info fetched from session");
         }
 
         [HttpGet]
         [Route("clear")]
-        public IActionResult ClearSession()
+        public JsonResult ClearSession()
         {
             HttpContext.Session.Clear();
-            return Content($"session clear");
+            return new JsonResult($"session clear");
         }
 
         protected User GetUser(string username, string password)

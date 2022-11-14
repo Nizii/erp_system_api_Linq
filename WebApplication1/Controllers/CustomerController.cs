@@ -11,6 +11,8 @@ using Microsoft.Extensions.Caching.Memory;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using System.Data;
+using Microsoft.AspNetCore.Http;
+using SessionMvc.App.Utilities;
 
 namespace WebApplication1.Controllers
 {
@@ -33,6 +35,13 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public JsonResult Get()
         {
+            if (HttpContext.Session.Get<User>("Nizam") is null)
+            {
+                var user = HttpContext.Session.Get<User>("Nizam");
+                Debug.WriteLine("Is null!!"+ user.user_name);
+                return new JsonResult(null);
+            }
+
             List<Customer> customerList = new List<Customer>();
             try
             {
@@ -67,10 +76,12 @@ namespace WebApplication1.Controllers
             catch (Exception ex)
             {
                 Debug.WriteLine("MySql " + ex.ToString());
+                Debug.WriteLine("Session" + ex.ToString());
             }
             con.Close();
             return new JsonResult(customerList);
         }
+
 
         [HttpGet("{id}")]
         public JsonResult Get(int id)
