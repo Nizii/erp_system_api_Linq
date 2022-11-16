@@ -43,7 +43,7 @@ namespace SessionMvc.App.Controllers
             }
             else
             {
-                return new JsonResult($"No User found");
+                return new JsonResult(null);
             }
         }
 

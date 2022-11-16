@@ -31,14 +31,11 @@ namespace WebApplication1.Controllers
             con = new MySqlConnection(connStr);
         }
 
-
         [HttpGet]
         public JsonResult Get()
         {
-            if (HttpContext.Session.Get<User>("Nizam") is null)
+            if (HttpContext.Session.Get("Nizam") is null)
             {
-                var user = HttpContext.Session.Get<User>("Nizam");
-                Debug.WriteLine("Is null!!"+ user.user_name);
                 return new JsonResult(null);
             }
 
@@ -86,7 +83,11 @@ namespace WebApplication1.Controllers
         [HttpGet("{id}")]
         public JsonResult Get(int id)
         {
- 
+            if (HttpContext.Session.Get("Nizam") is null)
+            {
+                return new JsonResult(null);
+            }
+
             Customer customer = null;
             try
             {
@@ -124,6 +125,10 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public JsonResult Post(Customer cus)
         {
+            if (HttpContext.Session.Get("Nizam") is null)
+            {
+                return new JsonResult(null);
+            }
 
             try
             {
@@ -154,6 +159,11 @@ namespace WebApplication1.Controllers
         [HttpPut]
         public JsonResult Put(Customer cus)
         {
+            if (HttpContext.Session.Get("Nizam") is null)
+            {
+                return new JsonResult(null);
+            }
+
             try
             {
                 con.Open();
@@ -183,6 +193,11 @@ namespace WebApplication1.Controllers
         [HttpDelete("{id}")]
         public JsonResult Delete(int id)
         {
+            if (HttpContext.Session.Get("Nizam") is null)
+            {
+                return new JsonResult(null);
+            }
+
             try
             {
                 con.Open();
