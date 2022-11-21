@@ -1,48 +1,40 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using SessionMvc.App.Utilities;
-using WebApplication1.Models;
-using MySql.Data.MySqlClient;
 using Microsoft.Extensions.Configuration;
-using System;
+using System.Linq;
+using Microsoft.Extensions.Caching.Memory;
+using System.Collections.Generic;
+using System.Data;
+using Microsoft.AspNetCore.Http;
+using ErpSystemDbContext;
+using User = ErpSystemDbContext.User;
+using WebApplication1;
 using System.Diagnostics;
 
-namespace SessionMvc.App.Controllers
+namespace WebApplication1
 {
 
-    [Route("session")]
+    [Route("api")]
     public class TestController : Controller
     {
-        string tempKey = "Nizam";
-        protected MySqlConnection con;
-        protected readonly IConfiguration _configuration;
-        public TestController()
-        {
-            string connStr = _configuration.GetConnectionString("ConnectionStringForDatabase");
-            con = new MySqlConnection(connStr);
-        }
-
+        public TestController(){}
 
         [HttpGet]
-        //[Route("{username}/{password}")]
-        [Route("set")]
-        public JsonResult Set(string username, string password)
+        [Route("{username}/{password}")]
+        public JsonResult Get(string username, string password)
         {
-            //var user = GetUser("Nizam", "123456");
-            
-            var user = new User
-            {
-                user_nr = 1,
-                user_name = "Nizam",
-            };
-
+            Debug.WriteLine("Get Request has been triggered");
+            User user = GetUser(username, password);
+            Debug.Write("Login "+user.UserName);
             if (user != null)
             {
-                HttpContext.Session.Set<User>(tempKey, user);
-                return new JsonResult($"{user.user_name}, save to session");
+                HttpContext.Session.Set<User>(username, user);
+                Debug.Write("Login Succeed");
+                return new JsonResult($"{user.UserName}, save to session");
             }
             else
             {
+                Debug.Write("Login failed");
                 return new JsonResult(null);
             }
         }
@@ -51,8 +43,8 @@ namespace SessionMvc.App.Controllers
         [Route("get")]
         public JsonResult Get()
         {
-            User user = HttpContext.Session.Get<User>(tempKey);
-            return new JsonResult($"{user.user_name}, info fetched from session");
+            User user = HttpContext.Session.Get<User>("Nizam");
+            return new JsonResult($"{user.UserName}, info fetched from session");
         }
 
         [HttpGet]
@@ -65,32 +57,16 @@ namespace SessionMvc.App.Controllers
 
         protected User GetUser(string username, string password)
         {
-            User user = null;
-            try
+            ErpSystemDbDataContext model = new ErpSystemDbDataContext();
+            User user = model.Users.Where(user => user.UserName == username).FirstOrDefault();
+            //if (BCrypt.Net.BCrypt.Verify(password, user.UserPassword))
+            if(user.UserPassword == password)
             {
-                string connStr = _configuration.GetConnectionString("ConnectionStringForDatabase");
-                con = new MySqlConnection(connStr);
-                con.Open();
-                var cmd = new MySqlCommand("SELECT user_name, user_password from erp_system_db.user where user_name ='" + username + "' and user_password ='" + password + "'", con);
-                MySqlDataReader reader = cmd.ExecuteReader();
-                if (reader.Read())
-                {
-                    user = new User
-                    {
-                        user_nr = (int)reader["user_nr"],
-                        user_name = reader["user_name"].ToString(),
-                        user_email = reader["user_email"].ToString(),
-                        user_password = reader["user_password"].ToString(),
-                    };
-                }
+                Debug.WriteLine("Password korrekt");
+                return user;
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("MySql " + ex.ToString());
-            }
-            Debug.WriteLine("User Nr " + user.user_nr);
-            con.Close();
-            return user;
+            Debug.WriteLine("Password inkorrekt");
+            return null;
         }
     }
 }

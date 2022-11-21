@@ -1,16 +1,14 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using MongoDB.Driver;
-using System;
 using System.Linq;
-using System.Threading.Tasks;
-using WebApplication1.Models;
-using System.Diagnostics;
 using Microsoft.Extensions.Caching.Memory;
-using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using System.Data;
+using Microsoft.AspNetCore.Http;
+using ErpSystemDbContext;
+using CustomerBill = ErpSystemDbContext.CustomerBill;
+using WebApplication1;
 
 namespace WebApplication1.Controllers
 {
@@ -18,152 +16,71 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class CustomerBillController : ControllerBase
     {
-        protected MySqlConnection con;
-        private readonly IConfiguration _configuration;
-        private readonly IWebHostEnvironment _env;
-        public CustomerBillController(IConfiguration configuration, IWebHostEnvironment env, IMemoryCache cache)
-        {
-            _configuration = configuration;
-            _env = env;
-        }
+        public CustomerBillController(){}
 
         [HttpGet]
         public JsonResult Get()
         {
-            List<CustomerBill> customerBillList = new List<CustomerBill>();
-            try
+            // Session prüfen
+            if (HttpContext.Session.Get("Nizam") is null)
             {
-                con.Open();
-                var cmd = new MySqlCommand("SELECT * from customer_bill", con);
-                Int32 count = (Int32)cmd.ExecuteScalar();
-                MySqlDataReader reader = cmd.ExecuteReader();
+                return new JsonResult(null);
+            }
 
-                while (reader.Read())
-                {
-                    for (int i = 0; i < count; i++)
-                    {
-                        CustomerBill customerBill = new CustomerBill
-                        {
-                            customer_bill_nr = (int)reader["customer_bill_nr"],
-                            company_name = reader["company_name"].ToString(),
-                            contact_person = reader["contact_person"].ToString(),
-                            customer_street = reader["customer_street"].ToString(),
-                            amount = reader["amount"].ToString(),
-                            currency = reader["currency"].ToString(),
-                            issued_on = reader["issued_on"].ToString(),
-                            payment_date = reader["payment_date"].ToString(),
-                        };
-                        customerBillList.Add(customerBill);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("MySql " + ex.ToString());
-            }
-            con.Close();
-            return new JsonResult(customerBillList);
+            // Linq Query request
+            ErpSystemDbDataContext model = new ErpSystemDbDataContext();
+            var query = from it in model.CustomerBills orderby it.CustomerBillNr select it;
+
+            //  Liste füllen
+            List<CustomerBill> list = new List<CustomerBill>();
+            foreach (CustomerBill cus in query)
+                list.Add(cus);
+
+            return new JsonResult(list);
         }
 
         [HttpGet("{id}")]
         public JsonResult Get(int id)
         {
-            CustomerBill customerBill = null;
-            try
-            {
-                con.Open();
-                var cmd = new MySqlCommand("SELECT * from customer_bill where customer_bill_nr = " + id, con);
-                MySqlDataReader reader = cmd.ExecuteReader();
+            // Session prüfen
+            if (HttpContext.Session.Get("Nizam") is null)
+                return new JsonResult(null);
 
-                while (reader.Read())
-                {
-                    customerBill = new CustomerBill
-                    {
-                        customer_bill_nr = (int)reader["customer_bill_nr"],
-                        company_name = reader["company_name"].ToString(),
-                        contact_person = reader["contact_person"].ToString(),
-                        customer_street = reader["customer_street"].ToString(),
-                        amount = reader["amount"].ToString(),
-                        currency = reader["currency"].ToString(),
-                        issued_on = reader["issued_on"].ToString(),
-                        payment_date = reader["payment_date"].ToString(),
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("MySql " + ex.ToString());
-            }
-            con.Close();
-            return new JsonResult(customerBill);
+            // Linq Query request
+            ErpSystemDbDataContext model = new ErpSystemDbDataContext();
+            return new JsonResult(from it in model.CustomerBills where (it.CustomerBillNr == id) select it);
         }
 
         [HttpPost]
-        public JsonResult Post(CustomerBill bill)
+        public JsonResult Post(Customer cus)
         {
-            try
-            {
-                con.Open();
-                var cmd = new MySqlCommand("INSERT INTO customer_bill (company_name,contact_person,customer_street,amount,currency,issued_on,payment_date) VALUES (@company_name,@contact_person,@customer_street,@amount,@currency,@issued_on,@payment_date)", con);
-                cmd.Parameters.AddWithValue("@company_name", bill.company_name);
-                cmd.Parameters.AddWithValue("@contact_person", bill.contact_person);
-                cmd.Parameters.AddWithValue("@customer_street", bill.customer_street);
-                cmd.Parameters.AddWithValue("@amount", bill.amount);
-                cmd.Parameters.AddWithValue("@currency", bill.currency);
-                cmd.Parameters.AddWithValue("@issued_on", "9999-99-99");
-                cmd.Parameters.AddWithValue("@payment_date", "9999-99-99");
-                var result = cmd.ExecuteNonQuery();
-                Debug.WriteLine(result);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("MySql " + ex.ToString());
-            }
-            con.Close();
+            if (HttpContext.Session.Get("Nizam") is null)
+                return new JsonResult(null);
+
             return new JsonResult("Done");
         }
 
         [HttpPut]
-        public JsonResult Put(CustomerBill bill)
+        public JsonResult Put(Customer cus)
         {
-            try
-            {
-                con.Open();
-                var cmd = new MySqlCommand("Update customer_bill set company_name=@company_name, contact_person=@contact_person, customer_street=@customer_street, amount=@amount, currency=@currency, issued_on=@issued_on, payment_date=@payment_date where customer_nr =" + bill.customer_bill_nr, con);
-                cmd.Parameters.AddWithValue("@company_name", bill.company_name);
-                cmd.Parameters.AddWithValue("@contact_person", bill.contact_person);
-                cmd.Parameters.AddWithValue("@customer_street", bill.customer_street);
-                cmd.Parameters.AddWithValue("@amount", bill.amount);
-                cmd.Parameters.AddWithValue("@currency", bill.currency);
-                cmd.Parameters.AddWithValue("@issued_on", "9999-99-99");
-                cmd.Parameters.AddWithValue("@payment_date", "9999-99-99");
-                var result = cmd.ExecuteNonQuery();
-                Debug.WriteLine(result);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("MySql " + ex.ToString());
-            }
-            con.Close();
+            if (HttpContext.Session.Get("Nizam") is null)
+                return new JsonResult(null);
+
             return new JsonResult("Done");
         }
-
 
         [HttpDelete("{id}")]
         public JsonResult Delete(int id)
         {
-            try
+            if (HttpContext.Session.Get("Nizam") is null)
+                return new JsonResult(null);
+
+            ErpSystemDbDataContext model = new ErpSystemDbDataContext();
+            var deleteOrderDetails = from it in model.CustomerBills where it.CustomerBillNr == id select it;
+            foreach (var row in deleteOrderDetails)
             {
-                con.Open();
-                var cmd = new MySqlCommand("DELETE FROM customer_bill WHERE customer_bill_nr =" + id, con);
-                var result = cmd.ExecuteNonQuery();
-                Debug.WriteLine(result);
+                model.CustomerBills.DeleteOnSubmit(row);
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("MySql " + ex.ToString());
-            }
-            con.Close();
             return new JsonResult("Done");
         }
     }
