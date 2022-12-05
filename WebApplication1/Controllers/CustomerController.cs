@@ -87,7 +87,6 @@ namespace WebApplication1
             foreach (var row in deleteOrderDetails)
             {
                 model.Customers.DeleteOnSubmit(row);
-                model.SubmitChanges();
             }
             return new JsonResult("Done");
         }
