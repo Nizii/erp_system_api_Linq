@@ -23,8 +23,8 @@ For more details about the backend see my other repository on this project [http
 
 # Password Hashing
 ### I used BCrypt to hash the passwords.
-### Here the password is hashed.
+Here the password is hashed.
 ![alt text](https://github.com/Nizii/ui/blob/master/src/assets/PostPw.PNG)
 
-### Here the password is verified
+Here the password is verified
 ![alt text](https://github.com/Nizii/ui/blob/master/src/assets/Verify.PNG)
