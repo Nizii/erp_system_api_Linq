@@ -21,11 +21,13 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public JsonResult Get()
         {
+            /*
             // Session prüfen
             if (HttpContext.Session.Get("Nizam") is null)
             {
                 return new JsonResult(null);
             }
+            */
 
             // Linq Query request
             ErpSystemDbDataContext model = new ErpSystemDbDataContext();

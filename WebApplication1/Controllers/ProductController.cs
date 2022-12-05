@@ -21,12 +21,13 @@ namespace WebApplication1
         [HttpGet]
         public JsonResult Get()
         {
+            /*
             // Session prüfen
             if (HttpContext.Session.Get("Nizam") is null)
             {
                 return new JsonResult(null);
             }
-
+            */
             // Linq Query request
             ErpSystemDbDataContext model = new ErpSystemDbDataContext();
             var query = from it in model.Products orderby it.ProductNr select it;

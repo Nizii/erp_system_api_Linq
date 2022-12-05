@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Serialization;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 
 namespace WebApplication1
 {
@@ -28,18 +30,22 @@ namespace WebApplication1
         public void ConfigureServices(IServiceCollection services)
         {
             //Enable CORS
-            services.AddCors(c =>
+            services.AddCors(options => options.AddPolicy("AllowOrigin", builder =>
             {
-                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-            });
+                builder.WithOrigins("http://localhost:8080").AllowAnyMethod().AllowAnyHeader();
+            }));
+            
+            services.AddMvc();
 
             services.AddDistributedMemoryCache();
 
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.IdleTimeout = TimeSpan.FromSeconds(1200);
                 options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.IsEssential = false;
             });
 
             //JSON Serializer
@@ -54,7 +60,6 @@ namespace WebApplication1
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //Enable CORS
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             if (env.IsDevelopment())
@@ -63,6 +68,10 @@ namespace WebApplication1
             }
 
             app.UseRouting();
+
+            app.UseCors("AllowOrigin");
+
+            app.UseCookiePolicy();
 
             app.UseAuthorization();
 
@@ -74,8 +83,7 @@ namespace WebApplication1
             });
             
             app.UseStaticFiles(new StaticFileOptions
-            {});
-            
+            {});       
         }
     }
 }
