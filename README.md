@@ -1,7 +1,7 @@
 # ERP System API
 
 This project was about creating a full stack application from design to the implementation of the front and back end. The system contains three tables (Contacts, Bills and Products) where you can add, update or delete data. Furthermore, the system has a registration and a login page.
-For more details about the backend see my other repository on this project [https://github.com/Nizii/ui](https://github.com/Nizii/ui)
+For more details about the **frontend** see my other repository on this project [https://github.com/Nizii/ui](https://github.com/Nizii/ui)
 
 # Team
 * Me
