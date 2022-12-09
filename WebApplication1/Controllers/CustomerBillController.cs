@@ -88,6 +88,7 @@ namespace WebApplication1.Controllers
             {
                 model.CustomerBills.DeleteOnSubmit(row);
             }
+            model.SubmitChanges();
             return new JsonResult("Done");
         }
     }
