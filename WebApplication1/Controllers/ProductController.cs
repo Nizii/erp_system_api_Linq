@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http;
 using ErpSystemDbContext;
 using Product = ErpSystemDbContext.Product;
 using WebApplication1;
+using System.Diagnostics;
+using System;
 
 namespace WebApplication1
 {
@@ -16,66 +18,72 @@ namespace WebApplication1
     [ApiController]
     public class ProductController : ControllerBase
     { 
-        public ProductController(){}
-
         [HttpGet]
         public JsonResult Get()
         {
             /*
-            // Session prüfen
             if (HttpContext.Session.Get("Nizam") is null)
             {
                 return new JsonResult(null);
             }
             */
-            // Linq Query request
             ErpSystemDbDataContext model = new ErpSystemDbDataContext();
             var query = from it in model.Products orderby it.ProductNr select it;
 
-            //  Liste füllen
             List<Product> list = new List<Product>();
             foreach (Product cus in query)
                 list.Add(cus);
-
             return new JsonResult(list);
         }
 
         [HttpGet("{id}")]
         public JsonResult Get(int id)
         {
-            // Session prüfen
+            /*
             if (HttpContext.Session.Get("Nizam") is null)
                 return new JsonResult(null);
-
-            // Linq Query request
+            */
             ErpSystemDbDataContext model = new ErpSystemDbDataContext();
             return new JsonResult(from it in model.Products where (it.ProductNr == id) select it);
         }
 
         [HttpPost]
-        public JsonResult Post(Customer cus)
+        public JsonResult Post(Product pro)
         {
+            /*
             if (HttpContext.Session.Get("Nizam") is null)
                 return new JsonResult(null);
-
+            */
+            try
+            {
+                ErpSystemDbDataContext model = new ErpSystemDbDataContext();
+                model.Products.InsertOnSubmit(pro);
+                model.SubmitChanges();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Insert failed with Ex: " + ex);
+            }
             return new JsonResult("Done");
         }
 
         [HttpPut]
-        public JsonResult Put(Customer cus)
+        public JsonResult Put(Product pro)
         {
+            /*
             if (HttpContext.Session.Get("Nizam") is null)
                 return new JsonResult(null);
-
+            */
             return new JsonResult("Done");
         }
 
         [HttpDelete("{id}")]
         public JsonResult Delete(int id)
         {
+            /*
             if (HttpContext.Session.Get("Nizam") is null)
                 return new JsonResult(null);
-
+            */
             ErpSystemDbDataContext model = new ErpSystemDbDataContext();
             var deleteOrderDetails = from it in model.Products where it.ProductNr == id select it;
             foreach (var row in deleteOrderDetails)

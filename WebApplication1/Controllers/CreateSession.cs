@@ -18,20 +18,11 @@ using Devart.Data.Linq;
 namespace WebApplication1
 {
     [Route("api")]
-    public class CreateSession : Controller
+    [EnableCors("AllowOrigin")]
+    public class CreateSession : ControllerBase
     {
-        protected IConfiguration _configuration;
-        protected IWebHostEnvironment _env;
-        protected IMemoryCache _cache;
-
-        public CreateSession(IConfiguration configuration, IWebHostEnvironment env, IMemoryCache cache)
-        {
-            _configuration = configuration;
-            _env = env;
-        }
 
         [HttpGet]
-        [EnableCors("AllowOrigin")]
         [Route("{username}/{password}")]
         public JsonResult Get(string username, string password)
         {
@@ -102,7 +93,7 @@ namespace WebApplication1
                 model.SubmitChanges();
             }
             catch (Exception ex) { 
-                Debug.WriteLine("Insert new User failed " + ex);
+                Debug.WriteLine("Insert failed with Ex: " + ex);
             }
         }
     }

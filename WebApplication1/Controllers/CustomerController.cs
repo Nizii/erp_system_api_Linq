@@ -10,6 +10,8 @@ using Customer = ErpSystemDbContext.Customer;
 using WebApplication1;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
+using System.Diagnostics;
+using System;
 
 namespace WebApplication1
 {
@@ -18,16 +20,6 @@ namespace WebApplication1
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        protected IConfiguration _configuration;
-        protected IWebHostEnvironment _env;
-        protected IMemoryCache _cache;
-
-        public CustomerController(IConfiguration configuration, IWebHostEnvironment env, IMemoryCache cache)
-        {
-            _configuration = configuration;
-            _env = env;
-        }
-
         [HttpGet]
         public JsonResult Get()
         {
@@ -62,6 +54,16 @@ namespace WebApplication1
             if (HttpContext.Session.Get<User>("TestUser") is null)
                 return new JsonResult("Not same session id");
             */
+            try
+            {
+                ErpSystemDbDataContext model = new ErpSystemDbDataContext();
+                model.Customers.InsertOnSubmit(cus);
+                model.SubmitChanges();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Insert failed with Ex: " + ex);
+            }
             return new JsonResult("Done");
         }
 
