@@ -51,6 +51,10 @@ namespace WebApplication1
         [HttpPost]
         public JsonResult Post(Customer cus)
         {
+            Debug.WriteLine("Company " + cus.CompanyName);
+            Debug.WriteLine("Surname " + cus.Surname);
+
+
             /*
             if (HttpContext.Session.Get<User>("TestUser") is null)
                 return new JsonResult("Not same session id");

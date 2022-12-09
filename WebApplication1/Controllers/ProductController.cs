@@ -56,6 +56,25 @@ namespace WebApplication1
             */
             try
             {
+                Product order = new Product
+                {
+                    ProductName = pro.ProductName,
+                    ProductSize = pro.ProductSize,
+                    PurchasingPricePerUnit = pro.PurchasingPricePerUnit,
+                    SellingPricePerUnit = pro.SellingPricePerUnit,
+                    Unit = pro.Unit,
+                    UnitsAvailable = pro.UnitsAvailable,
+                    Description = pro.Description,
+                };
+
+                Debug.WriteLine("Name "+pro.ProductName);
+                Debug.WriteLine("Size "+pro.ProductSize);
+                Debug.WriteLine("Purchasing "+pro.PurchasingPricePerUnit);
+                Debug.WriteLine("Selling "+pro.SellingPricePerUnit);
+                Debug.WriteLine("Unit "+pro.Unit);
+                Debug.WriteLine("Units Av "+pro.UnitsAvailable);
+                Debug.WriteLine("Desc "+pro.Description);
+
                 ErpSystemDbDataContext model = new ErpSystemDbDataContext();
                 model.Products.InsertOnSubmit(pro);
                 model.SubmitChanges();
