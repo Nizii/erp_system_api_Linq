@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using System.Diagnostics;
 using System;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebApplication1
 {
@@ -56,9 +57,26 @@ namespace WebApplication1
             */
             try
             {
+                Customer order = new Customer
+                {
+                    CompanyName = cus.CompanyName,
+                    Surname = cus.Surname,
+                    Lastname = cus.Lastname,
+                    Dob = cus.Dob,
+                    Street = cus.Street,
+                    Nr = cus.Nr,
+                    Postcode = cus.Postcode,
+                    Country = cus.Country,
+                    Cellphone = cus.Cellphone,
+                    Landlinephone = cus.Landlinephone,
+                    Note = cus.Note,
+                    Email = cus.Email,
+                };
+
                 ErpSystemDbDataContext model = new ErpSystemDbDataContext();
-                model.Customers.InsertOnSubmit(cus);
+                model.Customers.InsertOnSubmit(order);
                 model.SubmitChanges();
+
             }
             catch (Exception ex)
             {

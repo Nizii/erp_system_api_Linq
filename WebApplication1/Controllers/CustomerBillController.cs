@@ -11,6 +11,7 @@ using CustomerBill = ErpSystemDbContext.CustomerBill;
 using WebApplication1;
 using System.Diagnostics;
 using System;
+using Org.BouncyCastle.Asn1.X509;
 
 namespace WebApplication1.Controllers
 {
@@ -54,8 +55,21 @@ namespace WebApplication1.Controllers
             */
             try
             {
+                CustomerBill  order = new CustomerBill()
+                {
+                    CustomerBillNr = bill.CustomerBillNr,
+                    CompanyName = bill.CompanyName,
+                    ContactPerson = bill.ContactPerson,
+                    CustomerStreet = bill.CustomerStreet,
+                    CustomerPostcode = bill.CustomerPostcode,
+                    Amount = bill.Amount,
+                    Currency = bill.Currency,
+                    IssuedOn = bill.IssuedOn,
+                    PaymentDate = bill.PaymentDate,
+                };
+
                 ErpSystemDbDataContext model = new ErpSystemDbDataContext();
-                model.CustomerBills.InsertOnSubmit(bill);
+                model.CustomerBills.InsertOnSubmit(order);
                 model.SubmitChanges();
             }
             catch (Exception ex)
