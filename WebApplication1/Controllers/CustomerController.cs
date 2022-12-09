@@ -90,6 +90,7 @@ namespace WebApplication1
             {
                 model.Customers.DeleteOnSubmit(row);
             }
+            model.SubmitChanges();
             return new JsonResult("Done");
         }
     }
