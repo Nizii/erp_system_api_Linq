@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
 using Microsoft.Extensions.Caching.Memory;
@@ -11,7 +10,6 @@ using CustomerBill = ErpSystemDbContext.CustomerBill;
 using WebApplication1;
 using System.Diagnostics;
 using System;
-using Org.BouncyCastle.Asn1.X509;
 
 namespace WebApplication1.Controllers
 {
@@ -22,10 +20,9 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public JsonResult Get()
         {
-            /*
             if (HttpContext.Session.Get("Nizam") is null)
                 return new JsonResult(null);
-            */
+
             ErpSystemDbDataContext model = new ErpSystemDbDataContext();
             var query = from it in model.CustomerBills orderby it.CustomerBillNr select it;
 
@@ -38,10 +35,9 @@ namespace WebApplication1.Controllers
         [HttpGet("{id}")]
         public JsonResult Get(int id)
         {
-            /*
             if (HttpContext.Session.Get("Nizam") is null)
                 return new JsonResult(null);
-            */
+
             ErpSystemDbDataContext model = new ErpSystemDbDataContext();
             return new JsonResult(from it in model.CustomerBills where (it.CustomerBillNr == id) select it);
         }
@@ -49,10 +45,9 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public JsonResult Post(CustomerBill bill)
         {
-            /*
             if (HttpContext.Session.Get("Nizam") is null)
                 return new JsonResult(null);
-            */
+
             try
             {
                 CustomerBill  order = new CustomerBill()
@@ -82,20 +77,18 @@ namespace WebApplication1.Controllers
         [HttpPut]
         public JsonResult Put(CustomerBill bill)
         {
-            /*
             if (HttpContext.Session.Get("Nizam") is null)
                 return new JsonResult(null);
-            */
+
             return new JsonResult("Done");
         }
 
         [HttpDelete("{id}")]
         public JsonResult Delete(int id)
         {
-            /*
             if (HttpContext.Session.Get("Nizam") is null)
                 return new JsonResult(null);
-            */
+
             ErpSystemDbDataContext model = new ErpSystemDbDataContext();
             var deleteOrderDetails = from it in model.CustomerBills where it.CustomerBillNr == id select it;
             foreach (var row in deleteOrderDetails)

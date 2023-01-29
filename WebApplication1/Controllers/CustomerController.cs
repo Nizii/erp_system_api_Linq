@@ -24,10 +24,9 @@ namespace WebApplication1
         [HttpGet]
         public JsonResult Get()
         {
-            /*
             if (HttpContext.Session.Get<User>("TestUser") is null)
                 return new JsonResult("Not same session id");
-            */
+            
             ErpSystemDbDataContext model = new ErpSystemDbDataContext();
             var query = from it in model.Customers orderby it.CustomerNr select it;
           
@@ -40,10 +39,9 @@ namespace WebApplication1
         [HttpGet("{id}")]
         public JsonResult Get(int id)
         {
-            /*
             if (HttpContext.Session.Get<User>("TestUser") is null)
                 return new JsonResult("Not same session id");
-            */
+
             ErpSystemDbDataContext model = new ErpSystemDbDataContext();
             return new JsonResult(from it in model.Customers where (it.CustomerNr == id) select it);
         }
@@ -51,14 +49,9 @@ namespace WebApplication1
         [HttpPost]
         public JsonResult Post(Customer cus)
         {
-            Debug.WriteLine("Company " + cus.CompanyName);
-            Debug.WriteLine("Surname " + cus.Surname);
-
-
-            /*
             if (HttpContext.Session.Get<User>("TestUser") is null)
                 return new JsonResult("Not same session id");
-            */
+
             try
             {
                 Customer order = new Customer
@@ -92,20 +85,18 @@ namespace WebApplication1
         [HttpPut]
         public JsonResult Put(Customer cus)
         {
-            /*
             if (HttpContext.Session.Get<User>("TestUser") is null)
                 return new JsonResult("Not same session id");
-            */
+        
             return new JsonResult("Done");
         }
         
         [HttpDelete("{id}")]
         public JsonResult Delete(int id)
         {
-            /*
             if (HttpContext.Session.Get<User>("TestUser") is null)
                 return new JsonResult("Not same session id");
-            */
+
             ErpSystemDbDataContext model = new ErpSystemDbDataContext();
             var deleteOrderDetails = from it in model.Customers where it.CustomerNr == id select it;
             foreach (var row in deleteOrderDetails)

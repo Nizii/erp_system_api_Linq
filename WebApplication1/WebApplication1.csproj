@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="Devart.Data" Version="5.0.2938" />
+    <PackageReference Include="Devart.Data.Linq" Version="5.0.0" />
     <PackageReference Include="Devart.Data.MySql" Version="9.0.0" />
     <PackageReference Include="Devart.Data.MySql.Linq" Version="5.0.0" />
     <PackageReference Include="Flurl.Http" Version="3.2.4" />
@@ -22,6 +24,9 @@
     <PackageReference Include="MySql.Data.EntityFramework" Version="8.0.31" />
     <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.22" />
     <PackageReference Include="MySql.Web" Version="8.0.31" />
+    <PackageReference Include="System.Linq" Version="4.3.0" />
+    <PackageReference Include="System.Linq.Expressions" Version="4.3.0" />
+    <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>

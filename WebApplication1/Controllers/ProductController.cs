@@ -21,12 +21,11 @@ namespace WebApplication1
         [HttpGet]
         public JsonResult Get()
         {
-            /*
             if (HttpContext.Session.Get("Nizam") is null)
             {
                 return new JsonResult(null);
             }
-            */
+
             ErpSystemDbDataContext model = new ErpSystemDbDataContext();
             var query = from it in model.Products orderby it.ProductNr select it;
 
@@ -39,10 +38,9 @@ namespace WebApplication1
         [HttpGet("{id}")]
         public JsonResult Get(int id)
         {
-            /*
             if (HttpContext.Session.Get("Nizam") is null)
                 return new JsonResult(null);
-            */
+        
             ErpSystemDbDataContext model = new ErpSystemDbDataContext();
             return new JsonResult(from it in model.Products where (it.ProductNr == id) select it);
         }
@@ -50,10 +48,9 @@ namespace WebApplication1
         [HttpPost]
         public JsonResult Post(Product pro)
         {
-            /*
             if (HttpContext.Session.Get("Nizam") is null)
                 return new JsonResult(null);
-            */
+        
             try
             {
                 Product order = new Product
@@ -66,14 +63,6 @@ namespace WebApplication1
                     UnitsAvailable = pro.UnitsAvailable,
                     Description = pro.Description,
                 };
-
-                Debug.WriteLine("Name "+pro.ProductName);
-                Debug.WriteLine("Size "+pro.ProductSize);
-                Debug.WriteLine("Purchasing "+pro.PurchasingPricePerUnit);
-                Debug.WriteLine("Selling "+pro.SellingPricePerUnit);
-                Debug.WriteLine("Unit "+pro.Unit);
-                Debug.WriteLine("Units Av "+pro.UnitsAvailable);
-                Debug.WriteLine("Desc "+pro.Description);
 
                 ErpSystemDbDataContext model = new ErpSystemDbDataContext();
                 model.Products.InsertOnSubmit(pro);
@@ -89,20 +78,18 @@ namespace WebApplication1
         [HttpPut]
         public JsonResult Put(Product pro)
         {
-            /*
             if (HttpContext.Session.Get("Nizam") is null)
                 return new JsonResult(null);
-            */
+       
             return new JsonResult("Done");
         }
 
         [HttpDelete("{id}")]
         public JsonResult Delete(int id)
         {
-            /*
             if (HttpContext.Session.Get("Nizam") is null)
                 return new JsonResult(null);
-            */
+   
             ErpSystemDbDataContext model = new ErpSystemDbDataContext();
             var deleteOrderDetails = from it in model.Products where it.ProductNr == id select it;
             foreach (var row in deleteOrderDetails)

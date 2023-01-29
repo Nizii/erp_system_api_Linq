@@ -7,13 +7,7 @@ using ErpSystemDbContext;
 using User = ErpSystemDbContext.User;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
-using Org.BouncyCastle.Asn1.X509;
 using System;
-using System.Security.Cryptography;
-using Devart.Data.Linq;
 
 namespace WebApplication1
 {
