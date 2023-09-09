@@ -23,11 +23,3 @@ For more details about the **frontend** see my other repository on this project 
 ### Editor 
 * Visual Studio Code (Frontend)
 * Visual Studio (Backend)
-
-# Password Hashing
-I used BCrypt to hash the passwords. Below you see how the password is hashed.
-![alt text](https://github.com/Nizii/erp_system_api/blob/master/WebApplication1/Imgs/PostPw.PNG)
-
-Here the password is verified.
-
-![alt text](https://github.com/Nizii/erp_system_api/blob/master/WebApplication1/Imgs/Verify.PNG)
